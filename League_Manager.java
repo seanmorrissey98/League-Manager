@@ -306,4 +306,29 @@ public class gui
 		outputBoxs(x);
 		return x;
 	}
+	public class displayResults
+public static void main (String[] args)
+{
+}
+public static String displayResults(String leagueNumber)
+	{
+		 
+	}
+	
+	public static String [] getTeamScore(int fixtureNumber, String resultsFileName)
+	{
+		int arrayNum=0;
+		int positionInArray=1;
+		String [] arrayOfDetails=readFile(resultsFileNameName).split(",");
+		for(int i=0;i<arrayOfDetails.length;i++)
+		{
+			if(i%2==0)
+			{
+				arrayNum=Integer.parseInt(arrayOfDetails[i]);
+				if(teamNumber==arrayNum)
+					positionInArray=i+1;
+			}	
+		}	
+		teamName=arrayOfDetails[positionInArray];
+		return teamName;
 }
