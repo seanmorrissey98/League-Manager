@@ -315,20 +315,27 @@ public static String displayResults(String leagueNumber)
 		 
 	}
 	
-	public static String [] getTeamScore(int fixtureNumber, String resultsFileName)
+		public static String getTeamScore(int fixtureNumber, String resultsFileName)
 	{
-		int arrayNum=0;
-		int positionInArray=1;
+		
+		String[]teamScore={fixtureNumber,0,0};
+		boolean found=false;
+		int current=1;
+		int temp=0;
+		int numberOfLeagues=0;
 		String [] arrayOfDetails=readFile(resultsFileNameName).split(",");
-		for(int i=0;i<arrayOfDetails.length;i++)
+		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
 		{
-			if(i%2==0)
+			temp=Integer.parseInt(arrayOfDetails[i]);
+			if(temp==fixtureNumber)
 			{
-				arrayNum=Integer.parseInt(arrayOfDetails[i]);
-				if(teamNumber==arrayNum)
-					positionInArray=i+1;
-			}	
-		}	
-		teamName=arrayOfDetails[positionInArray];
-		return teamName;
+				found=true;
+				teamScore[current]=arrayOfDetails[i+1];
+				current++;
+				teamScore[cuurent]=arrayOfDetails[i+2];
+					
+			}
+		}
+		return teamScore;
+	}
 }
