@@ -116,6 +116,8 @@ public class LoginDev
 			writeFile(output,resultsFileName);
 			editResults();
 		}
+
+//Working on method to search file if fixture result is already inputted and replace it with a new result		
 		
 	}
 /* TESTING IGNORE	
