@@ -78,5 +78,19 @@ public class LoginDev
 		 {}
 		
 		return found;
-	}	
+	}
+	
+	public static void editResults()
+	{
+		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
+		String resultsFileName = leagueNumber +"_Results.txt";
+		String matchNumberChoice = JOptionPane.showInputDialog(null, "Enter fixture number to edit");
+		String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
+		String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
+		String output = matchNumberChoice + "," + homeScore + "," + awayScore;
+		writeFile(output, resultsFileName);
+	}
+	
+	
+	
 }
