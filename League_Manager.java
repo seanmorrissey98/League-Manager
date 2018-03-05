@@ -5,6 +5,7 @@ import java.io.*;
 public class LoginDev
 {
 	private static String item1;
+	private Static String loggedInAdminID; //Can update to int if needed
 	public static void main (String [] args)
 	{ 	
 		
@@ -30,6 +31,7 @@ public class LoginDev
 		{
 			if (foundUsername == true && foundPassword == true)
 			{
+				loggedInAdminID = item1;
 				loggedInStatus = true;
 				loginMessage = "Successfully logged in as " + username;
 				JOptionPane.showMessageDialog(null, loginMessage);
