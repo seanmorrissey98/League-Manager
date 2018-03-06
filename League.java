@@ -10,13 +10,13 @@ public class League
 	
 	public static void main(String [] args)throws IOException
 	{
-	checkIfExists(adminFile);
-	/*String username = JOptionPane.showInputDialog(null, "Enter username");
+	/*checkIfExists(adminFile);
+	String username = JOptionPane.showInputDialog(null, "Enter username");
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
 	boolean isLoggedIn = loginMethod(username, password);
-	createNewLeague();
-    addTeamsToLeague();
-	fixtureGeneration();*/
+	*/createNewLeague();
+    addTeamsToLeague(); 
+	fixtureGeneration();
 	}
 	
 		public static void writeFile(String input, String fileName)
@@ -73,10 +73,7 @@ public class League
 	     JOptionPane.showMessageDialog(null, output);	
 	}
 	
-	public static void outputBoxs(int output)
-	{
-		JOptionPane.showMessageDialog(null,output);
-	}
+
 	
 	public static void createNewLeague()
 	{
