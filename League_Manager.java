@@ -3,23 +3,20 @@ import javax.swing.*;
 import java.util.*;
 public class League
 {
-	private static int currentAdminNo=1;
-	private static int leagueNo=1;
+	private static int currentAdminNo=0;
 	final static String leagueFile="league.txt";
 	final static String adminFile="administrator.txt";
 	private static String item1;
 	
-	public static void main(String [] args)
+	public static void main(String [] args)throws IOException
 	{
-	//createNewLeague();
-    //addTeamsToLeague();
-	//fixtureGeneration();
-	String username = JOptionPane.showInputDialog(null, "Enter username");
+	checkIfExists(adminFile);
+	/*String username = JOptionPane.showInputDialog(null, "Enter username");
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
 	boolean isLoggedIn = loginMethod(username, password);
 	createNewLeague();
     addTeamsToLeague();
-	fixtureGeneration();
+	fixtureGeneration();*/
 	}
 	
 		public static void writeFile(String input, String fileName)
@@ -86,9 +83,8 @@ public class League
 		String leagueName=""; 
 		String leagueFileInput="";
 		leagueName=menuBox("Enter your league name:");
-		leagueFileInput=currentAdminNo+","+leagueName+","+leagueNo;
+		leagueFileInput=currentAdminNo+","+leagueName+","+getNumberOfLeaguesMade();
 		writeFile(leagueFileInput,leagueFile);
-	    leagueNo++;
 	}
 	
 	public static int getNumberOfLeaguesMade()
@@ -97,7 +93,7 @@ public class League
 		boolean found=false;
 		int currentAdminPostion=0;
 		int temp=0;
-		int numberOfLeagues=0;
+		int numberOfLeagues=1;
 		String [] arrayOfDetails=readFile(leagueFile).split(",");
 		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
 		{
@@ -257,32 +253,20 @@ public class League
 		return teamName;
 	}
 
-	/*public static void main (String [] args)
-	{ 	
-		
-		String username = JOptionPane.showInputDialog(null, "Enter username");
-		String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
-		boolean isLoggedIn = loginMethod(username, password);
-		if (isLoggedIn == true)
-		{
-			//Pauls Menu methods 
-		}
-	}*/
-	
-	
 	public static boolean loginMethod(String username, String password)
 	{
 		String loginMessage = "";
 		int maxLoginAttempts = 2; 
 		boolean loggedInStatus = false;
-		boolean foundUsername = readFile("Administrators.txt", username, 1);
-		boolean foundPassword = readFile("Administrators.txt", password, 2);
+		boolean foundUsername = readFile("administrators.txt", username, 1);
+		boolean foundPassword = readFile("administrators.txt", password, 2);
 		
 		while (maxLoginAttempts > 0)
 		{
 			if (foundUsername == true && foundPassword == true)
 			{
 				loggedInStatus = true;
+				currentAdminNo = Integer.parseInt(item1);
 				loginMessage = "Successfully logged in as " + username;
 				JOptionPane.showMessageDialog(null, loginMessage);
 				break;
@@ -332,4 +316,11 @@ public class League
 		return found;
 	}	
 
+	public static void checkIfExists(String fileName)throws IOException
+	{
+		File adminFile = new File(fileName);
+		if (!(adminFile.exists()))
+			adminFile.createNewFile();
+	}
+	
 }
