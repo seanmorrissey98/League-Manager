@@ -5,7 +5,7 @@ import java.io.*;
 public class LoginDev
 {
 	private static String item1;
-	private Static String loggedInAdminID; //Can update to int if needed
+	private static String loggedInAdminID; //Can update to int if needed
 	public static void main (String [] args)
 	{ 	
 		
