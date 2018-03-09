@@ -1,7 +1,7 @@
 import java.io.*;
 import javax.swing.*;
 import java.util.*;
-public class League
+public class League_Manager
 {
 	private static int currentAdminNo=0;
 	final static String leagueFile="league.txt";
