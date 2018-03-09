@@ -19,7 +19,7 @@ public class LoginDev
 	}
 	
 	
-	public static boolean loginMethod(String username, String password)
+	public static boolean loginMethod(String username, String password)//NEED TO CHANGE THIS METHOD
 	{ // Will create new readFile Method to take two string params for user and pass
 		String loginMessage = "";
 		int maxLoginAttempts = 2; 
@@ -53,6 +53,38 @@ public class LoginDev
 		}
 	return loggedInStatus;
 	}
+	
+	public static Boolean readFile(String fileName, String str1, String str2, int pos1, int pos2)
+   	{
+		String[] fileElements;	
+		boolean found = false;
+		Scanner in;
+		FileReader read;
+		try
+		{
+
+	        read = new FileReader(fileName);
+			in = new Scanner(read);
+			while(in.hasNext())
+			{    
+		        fileElements= (in.nextLine()).split(",");
+				
+				if (fileElements[pos1].equals(str1) && fileElements[pos2].equals(str2))
+				{
+					found = true;
+					item1 = fileElements[0]; // Admin#, League#, fixture#.
+					break;
+				}
+			}
+			in.close();
+			read.close();	
+		 }
+		 catch (Exception e)
+		 {}
+		
+		return found;
+	}
+	
 	
 	public static Boolean readFile(String textFile, String searchedItem, int itemPositionNo)
     	{
