@@ -339,3 +339,291 @@ public static String displayResults(String leagueNumber)
 		return teamScore;
 	}
 }
+import java.io.*;
+import javax.swing.*;
+import java.util.*;
+public class annettesWay
+{ 
+	
+/*
+public static void main(String [] args) throws IOException
+{
+	
+	if  (validLogin())
+	{
+		createLeague();
+		addTeams();
+		generateFixtures();
+		inputOutcomes();
+		editOutcomes();
+		generateTable();
+		
+		
+		public static int [][] generateTable();
+		{
+		boolean readFile; 
+		readFile = readFilesIntoArrayLists();
+		if (!readFile)
+		System.out.println("One or more files do not exist.");
+		else
+		{
+      createEmptyLeaderBoard();
+      processResults();
+      orderLeaderBoard();
+      displayLeaderboard();
+		}
+	}
+	}
+	else break;
+}
+ public static boolean validLogin() throws IOException
+  {
+	ArrayList<ArrayList<String>> admins = new ArrayList<ArrayList<String>>();
+    String filename = "Administrators.txt";
+	String errorMessage1 = filename + " not found";
+	String errorMessage2 = "No administrators registered";
+	File adminFile = new File(filename);
+	String fileElements[];
+	String adminName     = "admin1";
+	String adminPassword = "$today1$";
+	int    recordCount, adminID;
+	boolean found = false;
+	if (!(adminFile.exists()))
+	  System.out.println(errorMessage1);
+	else if (adminFile.length() == 0)
+	  System.out.println(errorMessage2);
+	else
+	{
+      Scanner in = new Scanner(adminFile);
+	  admins.add(new ArrayList<String>());
+	  admins.add(new ArrayList<String>());
+	  admins.add(new ArrayList<String>());
+	  while (in.hasNext())
+	  {
+		fileElements = (in.nextLine()).split(",");
+		for (int i = 0; i < fileElements.length; i++)
+		   (admins.get(i)).add(fileElements[i]);
+	  }
+	  in.close();
+	  
+	  for (int list = 0; list < admins.size(); list++)
+        for (int item = 0; item < admins.get(list).size(); item++)
+         System.out.println(admins.get(list).get(item));
+	 
+	  
+	  for (recordCount = 0; recordCount < admins.get(0).size(); recordCount++)
+		System.out.println(admins.get(0).get(recordCount) + " " + 
+		                   admins.get(1).get(recordCount) + " " + 
+						   admins.get(2).get(recordCount));  
+		
+	  for (recordCount = 0; 
+	           recordCount < admins.get(0).size() && !found; 
+			   recordCount++)
+	  {
+	    if ((admins.get(1).get(recordCount)).equals(adminName) &&
+		    (admins.get(2).get(recordCount)).equals(adminPassword))
+		  found = true;	
+	  }
+	  
+	  if (found)
+	  {
+	    adminID = Integer.parseInt(admins.get(0).get(--recordCount));
+	    System.out.println("Welcome Administrator " + adminID);
+	  }
+	  else
+	    System.out.println("Invalid user details");
+    }
+	return found;
+  }
+   public static boolean readFilesIntoArrayLists() throws IOException
+  {
+    String filename1 = "Teams20152016.txt";
+    String filename2 = "Fixtures20152016.txt";
+    String filename3 = "Outcomes20152016.txt";
+    
+    String fileElements[];
+	File inputFile1 = new File(filename1);
+	File inputFile2 = new File(filename2);
+	File inputFile3 = new File(filename3);
+	
+	teams = new ArrayList<ArrayList<String>>();
+	teams.add(new ArrayList<String>());
+    teams.add(new ArrayList<String>());
+  
+    fixtures = new ArrayList<ArrayList<Integer>>();
+	fixtures.add(new ArrayList<Integer>());
+    fixtures.add(new ArrayList<Integer>());
+    fixtures.add(new ArrayList<Integer>());
+    
+    results = new ArrayList<ArrayList<Integer>>();
+	results.add(new ArrayList<Integer>());
+    results.add(new ArrayList<Integer>());
+    results.add(new ArrayList<Integer>());
+    
+	if (inputFile1.exists() && inputFile2.exists() && inputFile3.exists())
+	{
+	  Scanner in;
+	  in = new Scanner(inputFile1);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    teams.get(0).add(fileElements[0]);  
+	    teams.get(1).add(fileElements[1]);  
+	  } 
+	  in.close();
+	  in = new Scanner(inputFile2);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    fixtures.get(0).add(Integer.parseInt(fileElements[0]));  
+	    fixtures.get(1).add(Integer.parseInt(fileElements[1]));  
+	    fixtures.get(2).add(Integer.parseInt(fileElements[2]));  
+	  } 
+	  in.close();
+	  in = new Scanner(inputFile3);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    results.get(0).add(Integer.parseInt(fileElements[0]));  
+	    results.get(1).add(Integer.parseInt(fileElements[1]));  
+	    results.get(2).add(Integer.parseInt(fileElements[2]));  
+	  } 
+	  in.close();
+	  return true;
+    }
+    else
+      return false;
+  }
+  
+  public static void createEmptyLeaderBoard()
+  {
+	// find out the number of teams/players which will determine 
+	// the number of rows  
+    int rows = teams.get(0).size();
+	int columns = 14;  
+	leaderBoard = new int[rows][columns];
+	// place team numbers in column 0 of leader board
+	for (int i = 0; i < leaderBoard.length; i++)
+      leaderBoard[i][0] = Integer.parseInt(teams.get(0).get(i));
+  }	  
+  
+  public static void processResults()
+  {
+	int fixtureNumber, homeTeamScore, awayTeamScore, homeTeamNumber, awayTeamNumber;
+	int position;
+	for (int i = 0; i < results.get(0).size(); i++)  
+    {
+	  fixtureNumber  = results.get(0).get(i);
+	  homeTeamScore  = results.get(1).get(i);
+	  awayTeamScore  = results.get(2).get(i);
+	  position       = fixtures.get(0).indexOf(fixtureNumber);
+	  homeTeamNumber = fixtures.get(1).get(position);
+	  awayTeamNumber = fixtures.get(2).get(position);
+	  if (homeTeamScore == awayTeamScore)
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,0,1,0,homeTeamScore,awayTeamScore,1);
+		recordFixtureResultForAwayTeam(awayTeamNumber,0,1,0,homeTeamScore,awayTeamScore,1);
+	  }  
+	  else if (homeTeamScore > awayTeamScore)
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,1,0,0,homeTeamScore,awayTeamScore,3);
+		recordFixtureResultForAwayTeam(awayTeamNumber,0,0,1,homeTeamScore,awayTeamScore,0);  
+	  }  
+	  else
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,0,0,1,homeTeamScore,awayTeamScore,0);
+		recordFixtureResultForAwayTeam(awayTeamNumber,1,0,0,homeTeamScore,awayTeamScore,3);  
+	  }    
+    }
+  }	 
+  
+  public static void recordFixtureResultForHomeTeam(int hTN, int w, int d, int l, 
+                                                       int hTS, int aTS, int p)
+  {
+	leaderBoard[hTN-1][1]++;        			// gamesPlayed
+	leaderBoard[hTN-1][2]+= w;      			// homeWin
+	leaderBoard[hTN-1][3]+= d;      			// homeDraw
+	leaderBoard[hTN-1][4]+= l;      			// homeLoss
+	leaderBoard[hTN-1][5]+= hTS;    			// homeTeamScore
+	leaderBoard[hTN-1][6]+= aTS;    			// awayTeamScore
+	leaderBoard[hTN-1][12] += (hTS - aTS);    	// goalDifference
+	leaderBoard[hTN-1][13] += p;    			// points
+  }
+ 
+  public static void recordFixtureResultForAwayTeam(int aTN, int w, int d, int l, 
+                                                       int hTS, int aTS, int p)
+  {
+	leaderBoard[aTN-1][1]++;        			// gamesPlayed
+	leaderBoard[aTN-1][7]+= w;      			// awayWin
+	leaderBoard[aTN-1][8]+= d;      			// awayDraw
+	leaderBoard[aTN-1][9]+= l;      			// awayLoss
+	leaderBoard[aTN-1][10]+= aTS;    			// awayTeamScore
+	leaderBoard[aTN-1][11]+= hTS;    			// homeTeamScore
+	leaderBoard[aTN-1][12] += (aTS - hTS);    	// goalDifference
+	leaderBoard[aTN-1][13] += p;    			// points  
+  }	
+  
+  public static void orderLeaderBoard()
+  {
+	int [][] temp = new int[leaderBoard.length][leaderBoard[0].length];
+    boolean finished = false;
+    while (!finished) 
+    {
+      finished = true;
+      for (int i = 0; i < leaderBoard.length - 1; i++) 
+      {
+        if (leaderBoard[i][13] < leaderBoard[i + 1][13])
+        {
+          for (int j = 0; j < leaderBoard[i].length; j++) 
+          {
+            temp[i][j]            = leaderBoard[i][j];
+            leaderBoard[i][j]     = leaderBoard[i + 1][j];
+            leaderBoard[i + 1][j] = temp[i][j];
+          }
+          finished = false;
+        }
+      }
+    }
+  }	  
+	  
+  public static void displayLeaderboard()
+  {
+	int aTeamNumber;
+	String aTeamName, formatStringTeamName;
+	String longestTeamName       = teams.get(1).get(0);
+    int    longestTeamNameLength = longestTeamName.length();
+    
+    for (int i = 1; i < teams.get(1).size(); i++)
+    {
+	  longestTeamName = teams.get(1).get(i);  
+      if (longestTeamNameLength < longestTeamName.length())
+        longestTeamNameLength = longestTeamName.length();
+    }
+    formatStringTeamName = "%-" + (longestTeamNameLength + 2) + "s";
+    System.out.printf(formatStringTeamName,"Team Name");
+    System.out.println("  GP  HW  HD  HL  GF  GA  AW  AD  AL  GF  GA   GD   TP"); 
+   
+    for (int i = 0; i < leaderBoard.length; i++)
+    {
+	  aTeamNumber       = leaderBoard[i][0];
+	  aTeamName         = teams.get(1).get(aTeamNumber - 1);       
+      System.out.printf(formatStringTeamName, aTeamName);
+      System.out.printf("%4d", leaderBoard[i][1]);
+      System.out.printf("%4d", leaderBoard[i][2]);
+      System.out.printf("%4d", leaderBoard[i][3]);
+      System.out.printf("%4d", leaderBoard[i][4]);
+      System.out.printf("%4d", leaderBoard[i][5]);
+      System.out.printf("%4d", leaderBoard[i][6]);
+      System.out.printf("%4d", leaderBoard[i][7]);
+	  System.out.printf("%4d", leaderBoard[i][8]);
+      System.out.printf("%4d", leaderBoard[i][9]);
+      System.out.printf("%4d", leaderBoard[i][10]);
+      System.out.printf("%4d", leaderBoard[i][11]);
+      System.out.printf("%5d", leaderBoard[i][12]);
+      System.out.printf("%5d", leaderBoard[i][13]);
+      System.out.println();
+    }
+  } 
+}
+*/
+
