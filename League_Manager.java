@@ -4,6 +4,7 @@ import java.io.*;
 
 public class LoginDev
 {
+	final static String adminFile = "Administrators.txt";
 	private static String item1;
 	private static String loggedInAdminID; //Can update to int if needed
 	public static void main (String [] args)
@@ -18,41 +19,43 @@ public class LoginDev
 		}
 	}
 	
-	
-	public static boolean loginMethod(String username, String password)//NEED TO CHANGE THIS METHOD
-	{ // Will create new readFile Method to take two string params for user and pass
-		String loginMessage = "";
-		int maxLoginAttempts = 2; 
+	public static boolean loginMethod(String username, String password)
+	{
+		int maxLoginAttempts = 3;
+		String loginMethod = "";
 		boolean loggedInStatus = false;
-		boolean foundUsername = readFile("Administrators.txt", username, 1);
-		boolean foundPassword = readFile("Administrators.txt", password, 2);
+		boolean foundUserDetails = false;
 		
-		while (maxLoginAttempts > 0)
+		for (int i=maxLoginAttempts;i>0;i--)
 		{
-			if (foundUsername == true && foundPassword == true)
+			foundUserDetails = readFile(adminFile, username, password, 1, 2);
+			if (foundUserDetails == true)
 			{
 				loggedInAdminID = item1;
 				loggedInStatus = true;
-				loginMessage = "Successfully logged in as " + username;
-				JOptionPane.showMessageDialog(null, loginMessage);
+				JOptionPane.showMessageDialog(null, "Successfully logged in as " + username);
 				break;
 			}
 			else
 			{
-				loginMessage = "Incorrect login details\n" + maxLoginAttempts + " attempt(s) remaining";
-				JOptionPane.showMessageDialog(null, loginMessage);
-				maxLoginAttempts--;
-				username = JOptionPane.showInputDialog(null, "Enter username");
-				password = JOptionPane.showInputDialog(null, "Enter password");
 				if (maxLoginAttempts == 0)
 				{
-					loginMessage = "Invalid login details\nNo login attempts remaining";
-					JOptionPane.showMessageDialog(null, loginMessage);
+					JOptionPane.showMessageDialog(null, "Incorrect login details\nNo attempt remaining");
+					break;
+				}	
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect login details\n" + (maxLoginAttempts-1) + " attempt(s) remaining");
+					maxLoginAttempts--;
+					username = JOptionPane.showInputDialog(null, "Enter username");
+					password = JOptionPane.showInputDialog(null, "Enter password");
+					foundUserDetails = readFile(adminFile, username, password, 1, 2);
 				}
 			}
 		}
-	return loggedInStatus;
-	}
+		return loggedInStatus;
+	}	
+	
 	
 	public static Boolean readFile(String fileName, String str1, String str2, int pos1, int pos2)
    	{
