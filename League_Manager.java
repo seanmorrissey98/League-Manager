@@ -20,7 +20,7 @@ public class LoginDev
 	
 	
 	public static boolean loginMethod(String username, String password)
-	{
+	{ // Will create new readFile Method to take two string params for user and pass
 		String loginMessage = "";
 		int maxLoginAttempts = 2; 
 		boolean loggedInStatus = false;
