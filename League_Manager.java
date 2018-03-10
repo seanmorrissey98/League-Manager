@@ -19,7 +19,7 @@ public class LoginDev
 		}
 	}
 	
-	public static boolean loginMethod(String username, String password)
+		public static boolean loginMethod(String username, String password)
 	{
 		int maxLoginAttempts = 3;
 		String loginMethod = "";
@@ -38,7 +38,7 @@ public class LoginDev
 			}
 			else
 			{
-				if (maxLoginAttempts == 0)
+				if (maxLoginAttempts == 1)
 				{
 					JOptionPane.showMessageDialog(null, "Incorrect login details\nNo attempt remaining");
 					break;
