@@ -152,6 +152,31 @@ public class LoginDev
 			editResults();
 		}
 
+	public static String[] getAdminLeagues() //WIP Method to store admin's league(names) in array, can be adjusted to take league number
+	{
+		ArrayList<String> adminLeagues = new ArrayList<String>();
+		String leagueName = "";
+		try
+		{
+			FileReader read = new FileReader(leagueFile);
+			Scanner in = new Scanner(read);
+			while(in.hasNext())
+			{
+				String text = in.nextLine();
+				String[] fileElements = text.split(",");
+				if (fileElements[2].equals(loggedInAdminID))
+				{
+					leagueName = fileElements[1];
+					adminLeagues.add(leagueName);
+				}
+			}
+		}
+		catch(Exception e)
+		{}
+		String [] leagueChoices = adminLeagues.toArray(new String[adminLeagues.size()]);
+		return leagueChoices;
+	}
+		
 //Working on method to search file if fixture result is already inputted and replace it with a new result		
 		
 	}
