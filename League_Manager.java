@@ -234,5 +234,92 @@ public class LoginDev
 			System.out.println("Fixture: " + fixtureNumber + "\tHome Score: " + homeScore + "\tAway Score: " + awayScore);
 		}
 	}
-*/	
+*/
+	
+	
+	public static void editResults() //Not Working yet
+	{
+		int choice = 0;
+		String [] yesNo = {"yes", "no"};
+		boolean resultExists = false;
+		String matchNumberChoice ="";
+		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
+		resultsFileName = leagueNumber +"_Results.txt";
+		matchNumberChoice = JOptionPane.showInputDialog(null, "Enter fixture number to edit");
+		resultExists = readFile(resultsFileName, matchNumberChoice, 0);
+		if (resultExists == true)
+		{
+				
+			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?");
+				
+			if (choice == 0) //If yes
+			{
+			//will put method to remove existing fixture result and overwrite it
+			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
+			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
+			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
+			writeFile(output,resultsFileName);
+			editResults();	
+			}
+			
+		}
+		else 
+		{
+			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
+			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
+			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
+			writeFile(output,resultsFileName);
+			editResults();
+		}
+	}
+	
+		public static void writeFile(String input, String fileName)
+		{
+		try
+		{
+		    FileWriter aFileWriter = new FileWriter(fileName,true);
+            PrintWriter out = new PrintWriter(aFileWriter);
+			out.print(input);
+			out.println();
+			out.close();
+			aFileWriter.close();	
+		}
+		catch(Exception e)
+		{}
+		}
+		
+		
+	public static void overwriteFile(String file, String toDel)
+	{
+		try
+		{
+		File tempFile = newFile (file.getAbsolutePath() + ".tmp");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		PrintWriter pw = new PrintWriter (new FileWriter(tempFile));
+		String line;
+		String[] fileElements;
+		while ((line = br.readLine()) != null)
+		{
+			fileElements = (br.nextLine()).split(",");
+			if (!(fileElements[pos].equals(toDel)))
+			{
+				pw.println(line);
+				pw.flush();
+			}
+		}
+			pw.close();
+			br.close();
+			
+		    if (!(aFile.exists()))
+				System.out.println(aFile.getName() + " does not exist.");
+			else if(aFile.delete())
+				System.out.println(aFile.getName() + " is now deleted.");
+			else if (tempFile.renameTo(file))
+				System.out.println("Renamed file");
+					
+		}
+		
+		catch(Exception e)
+		{}
+	}
 }
