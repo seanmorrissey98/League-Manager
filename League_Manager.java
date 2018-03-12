@@ -179,6 +179,40 @@ public class LoginDev
 		
 //Working on method to search file if fixture result is already inputted and replace it with a new result		
 		
+	public static void overwriteFile(String file, String toDel) //WIP METHOD TO OVERWRITE DATA IN FILE
+	{
+		try
+		{
+		File tempFile = newFile (file.getAbsolutePath() + ".tmp");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		PrintWriter pw = new PrintWriter (new FileWriter(tempFile));
+		String line;
+		String[] fileElements;
+		while ((line = br.readLine()) != null)
+		{
+			fileElements = (br.nextLine()).split(",");
+			if (!(fileElements[pos].equals(toDel)))
+			{
+				pw.println(line);
+				pw.flush();
+			}
+		}
+			pw.close();
+			br.close();
+			
+		    if (!(aFile.exists()))
+				System.out.println(aFile.getName() + " does not exist.");
+			else if(aFile.delete())
+				System.out.println(aFile.getName() + " is now deleted.");
+			else if (tempFile.renameTo(file))
+				System.out.println("Renamed file");
+					
+		}
+		
+		catch(Exception e)
+		{}
+	}	
+		
 	}
 /* TESTING IGNORE	
 	public static void displayResults()
