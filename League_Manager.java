@@ -117,7 +117,7 @@ public class LoginDev
 		return found;
 	}
 	
-	public static void editResults() //Not Working yet
+	public static void editResults() 
 	{
 		int choice = 0;
 		String [] yesNo = {"yes", "no"};
@@ -134,7 +134,7 @@ public class LoginDev
 				
 			if (choice == 0) //If yes
 			{
-			//will put method to remove existing fixture result and overwrite it
+			removeLineFromFile(resultsFileName, matchNumberChoice, 0);
 			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
 			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
 			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
@@ -151,6 +151,7 @@ public class LoginDev
 			writeFile(output,resultsFileName);
 			editResults();
 		}
+	}
 
 	public static String[] getAdminLeagues() //WIP Method to store admin's league(names) in array, can be adjusted to take league number
 	{
