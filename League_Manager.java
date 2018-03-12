@@ -179,38 +179,51 @@ public class LoginDev
 		
 //Working on method to search file if fixture result is already inputted and replace it with a new result		
 		
-	public static void overwriteFile(String file, String toDel) //WIP METHOD TO OVERWRITE DATA IN FILE
+	public static void removeLineFromFile(String fileName, String toDel, int pos) //Params file name, String to delete, position of string
 	{
-		try
-		{
-		File tempFile = newFile (file.getAbsolutePath() + ".tmp");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		PrintWriter pw = new PrintWriter (new FileWriter(tempFile));
-		String line;
+		try {
 		String[] fileElements;
-		while ((line = br.readLine()) != null)
-		{
-			fileElements = (br.nextLine()).split(",");
-			if (!(fileElements[pos].equals(toDel)))
-			{
-				pw.println(line);
-				pw.flush();
-			}
-		}
-			pw.close();
-			br.close();
-			
-		    if (!(aFile.exists()))
-				System.out.println(aFile.getName() + " does not exist.");
-			else if(aFile.delete())
-				System.out.println(aFile.getName() + " is now deleted.");
-			else if (tempFile.renameTo(file))
-				System.out.println("Renamed file");
-					
-		}
-		
-		catch(Exception e)
-		{}
+		String line = "";
+        File inFile = new File(fileName);
+
+          if (!inFile.isFile()) {
+            System.out.println("Parameter is not an existing file");
+            return;
+          }
+
+          File tempFile = new File("temp.txt");
+
+          BufferedReader br = new BufferedReader(new FileReader(inFile));
+          PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+
+          while ((line = br.readLine()) != null) 
+		  {
+			fileElements = line.split(","); 
+            if (!fileElements[pos].equals(toDel)) {
+              pw.println(line);
+              pw.flush();
+            }
+          }
+
+          pw.close();
+          br.close();
+
+          //Delete the original file
+          if (!inFile.delete()) {
+            System.out.println("Could not delete file");
+            return;
+          } 
+
+          //Rename the new file to the filename the original file had.
+          if (!tempFile.renameTo(inFile)) {
+            System.out.println("Could not rename file");
+          }
+
+        } catch (FileNotFoundException ex) {
+          ex.printStackTrace();
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
 	}	
 		
 	}
