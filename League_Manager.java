@@ -11,14 +11,12 @@ public class League
 	
 	public static void main(String [] args)throws IOException
 	{
-	/*checkIfExists(adminFile);
+	checkIfExists(adminFile);
 	String username = JOptionPane.showInputDialog(null, "Enter username");
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
-	boolean isLoggedIn = loginMethod(username, password);*/
-	optionBoxs(getLeagueNames(currentAdminNo),"Please select a league:");
-	/*createNewLeague();
-    addTeamsToLeague();
-	fixtureGeneration();*/
+	boolean isLoggedIn = loginMethod(username, password);
+	createNewLeague();
+	//fixtureGeneration();
 	}
 	
 		 
@@ -60,6 +58,7 @@ public class League
 		leagueFileInput=currentAdminNo+","+leagueName+","+leagueNo;
 		writeFile(leagueFileInput,leagueFile);
 	    leagueNo++;
+		addTeamsToLeague();
 	}
 	
 	public static int getNumberOfLeaguesMade()
@@ -109,7 +108,7 @@ public class League
 		in.close();
 		reader.close();
 		}
-		catch(Exception E)
+		catch(Exception e)
 		{}
 		return fileText;
 	}
@@ -130,15 +129,9 @@ public class League
 		String teamName=""; 
 		String teamFileInfo=""; 
 		String teamFileName="";
-		int whichLeague=menuBoxInt("Enter which league number to add teams/players to:");
+		int whichLeague=getNumberOfLeaguesMade()+1;
 		teamFileName=whichLeague+"_participants.txt";
-		if(getNumberOfLeaguesMade()<whichLeague)
-		{
-			outputBoxs("This league does not exist.");
-		}
-		else
-		{
-			int numberOfTeams=menuBoxInt("Enter the amount of teams/players:");
+		int numberOfTeams=menuBoxInt("Enter the amount of teams/players:");
 			for(int i=0;i<numberOfTeams;i++)
 			{
 				info="enter team/player number:"+(i+1);
@@ -146,7 +139,6 @@ public class League
 				teamFileInfo=(i+1)+","+teamName;
 				writeFile(teamFileInfo,teamFileName);
 			}
-		}
 	}
 	
 	public static void fixtureGeneration()
@@ -258,62 +250,69 @@ public class League
 		teamName=arrayOfDetails[positionInArray];
 		return teamName;
 	}
+	
+
 	public static boolean loginMethod(String username, String password)
 	{
-		String loginMessage = "";
-		int maxLoginAttempts = 2; 
+		int maxLoginAttempts = 3;
+		String loginMethod = "";
 		boolean loggedInStatus = false;
-		boolean foundUsername = readFile("administrator.txt", username, 1);
-		boolean foundPassword = readFile("administrator.txt", password, 2);
+		boolean foundUserDetails = false;
 		
-		while (maxLoginAttempts > 0)
+		for (int i=maxLoginAttempts;i>0;i--)
 		{
-			if (foundUsername == true && foundPassword == true)
+			foundUserDetails = readFile(adminFile, username, password, 1, 2);
+			if (foundUserDetails == true)
 			{
-				loggedInStatus = true;
 				currentAdminNo = Integer.parseInt(item1);
-				loginMessage = "Successfully logged in as " + username;
-				JOptionPane.showMessageDialog(null, loginMessage);
+				loggedInStatus = true;
+				JOptionPane.showMessageDialog(null, "Successfully logged in as " + username);
 				break;
 			}
 			else
 			{
-				loginMessage = "Incorrect login details\n" + maxLoginAttempts + " attempt(s) remaining";
-				JOptionPane.showMessageDialog(null, loginMessage);
-				maxLoginAttempts--;
-				username = JOptionPane.showInputDialog(null, "Enter username");
-				password = JOptionPane.showInputDialog(null, "Enter password");
-				if (maxLoginAttempts == 0)
+				if (maxLoginAttempts == 1)
 				{
-					loginMessage = "Invalid login details\nNo login attempts remaining";
-					JOptionPane.showMessageDialog(null, loginMessage);
+					JOptionPane.showMessageDialog(null, "Incorrect login details\nNo attempt remaining");
+					break;
+				}	
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect login details\n" + (maxLoginAttempts-1) + " attempt(s) remaining");
+					maxLoginAttempts--;
+					username = JOptionPane.showInputDialog(null, "Enter username");
+					password = JOptionPane.showInputDialog(null, "Enter password");
+					foundUserDetails = readFile(adminFile, username, password, 1, 2);
 				}
 			}
 		}
-	return loggedInStatus;
-	}
+		return loggedInStatus;
+	}	
 	
-	public static Boolean readFile(String textFile, String searchedItem, int itemPositionNo)
-    	{
+public static Boolean readFile(String fileName, String str1, String str2, int pos1, int pos2)
+   	{
+		String[] fileElements;	
 		boolean found = false;
+		Scanner in;
+		FileReader read;
 		try
-		 {
-			item1 = "";
-	        FileReader reader=new FileReader(textFile);
-			Scanner in=new Scanner(reader);
+		{
+
+	        read = new FileReader(fileName);
+			in = new Scanner(read);
 			while(in.hasNext())
 			{    
-		        String fileText=in.nextLine();
-		        String[] split = fileText.split(",");
-				if (split[itemPositionNo].equals(searchedItem))
+		        fileElements= (in.nextLine()).split(",");
+				
+				if (fileElements[pos1].equals(str1) && fileElements[pos2].equals(str2))
 				{
 					found = true;
-					item1 = split[0]; // Admin#, League#, fixture#.
+					item1 = fileElements[0]; // Admin#, League#, fixture#.
 					break;
 				}
 			}
 			in.close();
-			reader.close();	
+			read.close();	
 		 }
 		 catch (Exception e)
 		 {}
@@ -369,6 +368,41 @@ public class League
 	{
         int result = JOptionPane.showOptionDialog(null, whatYouWantItToSay, "League Manager", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
         return result;
+	}
+	
+	public static boolean validateNumberInput(String text)
+	{
+		String result="";
+		String pattern="[0-9]{0,10}";
+		String message1 = "A number must be input.";
+	    String message2 = "Format of user input is incorrect, a number  is required.";
+		boolean verified=false;
+		if      (text != null)        
+		{ 
+			if (text.equals(""))   
+			{
+				result = message1;
+				outputBoxs(message1);
+			}
+			else
+			{				
+		
+				if (text.indexOf(" ") != -1) text = text.replaceAll("\\s+","");
+	        	{
+					if (!text.matches(pattern)) 
+					{
+					result = message2;
+					outputBoxs(message2);
+					}
+				
+					else
+					{
+					verified=true;
+					}
+				}
+			}
+		}
+		return verified ;
 	}
 
 }
