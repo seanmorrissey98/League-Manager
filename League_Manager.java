@@ -4,7 +4,6 @@ import java.util.*;
 public class League
 {
 	private static int currentAdminNo=1;
-	private static int leagueNo=1;
 	final static String leagueFile="league.txt";
 	final static String adminFile="administrator.txt";
 	private static String item1;
@@ -16,7 +15,7 @@ public class League
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
 	boolean isLoggedIn = loginMethod(username, password);
 	createNewLeague();
-	//fixtureGeneration();
+	fixtureGeneration();
 	}
 	
 		 
@@ -50,24 +49,30 @@ public class League
 		return x;
 	}
 	
-	public static void createNewLeague()
+	public static void createNewLeague()throws IOException
 	{
 		String leagueName=""; 
 		String leagueFileInput="";
 		leagueName=menuBox("Enter your league name:");
-		leagueFileInput=currentAdminNo+","+leagueName+","+leagueNo;
+		leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
 		writeFile(leagueFileInput,leagueFile);
-	    leagueNo++;
 		addTeamsToLeague();
 	}
 	
-	public static int getNumberOfLeaguesMade()
+	public static int getNumberOfLeaguesMade()throws IOException
 	{
 		boolean sameAdmin=true;
 		boolean found=false;
 		int currentAdminPostion=0;
 		int temp=0;
 		int numberOfLeagues=0;
+		File leagueFilers = new File(leagueFile);
+		if (!(leagueFilers.exists()))
+		{
+			leagueFilers.createNewFile();
+		}
+		else
+		{
 		String [] arrayOfDetails=readFile(leagueFile).split(",");
 		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
 		{
@@ -88,6 +93,7 @@ public class League
 			{
 				numberOfLeagues=Integer.parseInt(arrayOfDetails[i+2]);
 			}
+		}
 		}
 		return numberOfLeagues;
 	}
@@ -123,7 +129,7 @@ public class League
 		JOptionPane.showMessageDialog(null,output);
 	}
 	
-	public static void addTeamsToLeague()
+	public static void addTeamsToLeague()throws IOException
 	{
 		String info=""; 
 		String teamName=""; 
@@ -141,7 +147,7 @@ public class League
 			}
 	}
 	
-	public static void fixtureGeneration()
+	public static void fixtureGeneration()throws IOException
 	{
 		String info=""; 
 		String fixtureFileInfo=""; 
@@ -320,6 +326,7 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 		return found;
 	}
 	
+	
 	public static void checkIfExists(String fileName)throws IOException
 	{
 		File adminFile = new File(fileName);
@@ -327,7 +334,7 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 			adminFile.createNewFile();
 	}
 	
-	public static String [] getLeagueNames(int adminNo)
+	public static String [] getLeagueNames(int adminNo)throws IOException
 	{
 		String [] arrayOfDetails=readFile(leagueFile).split(",");
 		String [] leagueNames= new String [getNumberOfLeaguesMade()];
