@@ -1,9 +1,10 @@
 import java.io.*;
 import javax.swing.*;
 import java.util.*;
-public class League_Manager
+public class League
 {
-	private static int currentAdminNo=0;
+	private static int currentAdminNo=1;
+	private static int leagueNo=1;
 	final static String leagueFile="league.txt";
 	final static String adminFile="administrator.txt";
 	private static String item1;
@@ -13,47 +14,30 @@ public class League_Manager
 	/*checkIfExists(adminFile);
 	String username = JOptionPane.showInputDialog(null, "Enter username");
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
-	boolean isLoggedIn = loginMethod(username, password);
-	*/createNewLeague();
-    addTeamsToLeague(); 
-	fixtureGeneration();
+	boolean isLoggedIn = loginMethod(username, password);*/
+	optionBoxs(getLeagueNames(currentAdminNo),"Please select a league:");
+	/*createNewLeague();
+    addTeamsToLeague();
+	fixtureGeneration();*/
 	}
 	
-		public static void writeFile(String input, String fileName)
-		{
-		try
-		{
-		    FileWriter aFileWriter = new FileWriter(fileName,true);
-            PrintWriter out = new PrintWriter(aFileWriter);
-			out.print(input);
-			out.println();
-			out.close();
-			aFileWriter.close();	
-		}
-		catch(Exception e)
-		{}
-		}
-			
-	public static String readFile(String textFile)
-	{
-		String fileText="";
-		try
-		{
-		FileReader reader=new FileReader(textFile);
-		Scanner in=new Scanner(reader);
-		while(in.hasNext())
-		{
-			fileText=in.nextLine();
-			fileText=fileText+",";
-		}
-		in.close();
-		reader.close();
-		}
-		catch(Exception E)
-		{}
-		return fileText;
-	}
-	
+		 
+		 public static void writeFile(String input, String fileName)
+		 {
+		 try
+		 {
+		     FileWriter aFileWriter = new FileWriter(fileName,true);
+             PrintWriter out = new PrintWriter(aFileWriter);
+			 out.print(input);
+			 out.println();
+			 out.close();
+			 aFileWriter.close();
+        			
+		 }
+		 catch(Exception e)
+		 {}
+		 }
+		 
 	 public static String menuBox(String Options)
 	 {
 		 String input="";
@@ -68,20 +52,14 @@ public class League_Manager
 		return x;
 	}
 	
-	public static void outputBoxs(String output)
-	{
-	     JOptionPane.showMessageDialog(null, output);	
-	}
-	
-
-	
 	public static void createNewLeague()
 	{
 		String leagueName=""; 
 		String leagueFileInput="";
 		leagueName=menuBox("Enter your league name:");
-		leagueFileInput=currentAdminNo+","+leagueName+","+getNumberOfLeaguesMade();
+		leagueFileInput=currentAdminNo+","+leagueName+","+leagueNo;
 		writeFile(leagueFileInput,leagueFile);
+	    leagueNo++;
 	}
 	
 	public static int getNumberOfLeaguesMade()
@@ -90,7 +68,7 @@ public class League_Manager
 		boolean found=false;
 		int currentAdminPostion=0;
 		int temp=0;
-		int numberOfLeagues=1;
+		int numberOfLeagues=0;
 		String [] arrayOfDetails=readFile(leagueFile).split(",");
 		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
 		{
@@ -115,6 +93,37 @@ public class League_Manager
 		return numberOfLeagues;
 	}
 	
+	public static String readFile(String textFile)
+	{
+		String fileText="";
+		String ass="";
+		try
+		{
+		FileReader reader=new FileReader(textFile);
+		Scanner in=new Scanner(reader);
+		while(in.hasNext())
+		{
+			ass=in.nextLine();
+			fileText=fileText+ass+",";
+		}
+		in.close();
+		reader.close();
+		}
+		catch(Exception E)
+		{}
+		return fileText;
+	}
+	
+	public static void outputBoxs(String output)
+	{
+	     JOptionPane.showMessageDialog(null, output);	
+	}
+	
+	public static void outputBoxs(int output)
+	{
+		JOptionPane.showMessageDialog(null,output);
+	}
+	
 	public static void addTeamsToLeague()
 	{
 		String info=""; 
@@ -125,7 +134,7 @@ public class League_Manager
 		teamFileName=whichLeague+"_participants.txt";
 		if(getNumberOfLeaguesMade()<whichLeague)
 		{
-			outputBoxs("This league does not exist or you have not created it.");
+			outputBoxs("This league does not exist.");
 		}
 		else
 		{
@@ -222,7 +231,7 @@ public class League_Manager
 			}
 		}
 	}
-	
+
 	public static int getNumberOfTeams(String teamFileName)
 	{
 		int numberOfTeams=0;
@@ -249,14 +258,13 @@ public class League_Manager
 		teamName=arrayOfDetails[positionInArray];
 		return teamName;
 	}
-
 	public static boolean loginMethod(String username, String password)
 	{
 		String loginMessage = "";
 		int maxLoginAttempts = 2; 
 		boolean loggedInStatus = false;
-		boolean foundUsername = readFile("administrators.txt", username, 1);
-		boolean foundPassword = readFile("administrators.txt", password, 2);
+		boolean foundUsername = readFile("administrator.txt", username, 1);
+		boolean foundPassword = readFile("administrator.txt", password, 2);
 		
 		while (maxLoginAttempts > 0)
 		{
@@ -311,8 +319,8 @@ public class League_Manager
 		 {}
 		
 		return found;
-	}	
-
+	}
+	
 	public static void checkIfExists(String fileName)throws IOException
 	{
 		File adminFile = new File(fileName);
@@ -320,4 +328,47 @@ public class League_Manager
 			adminFile.createNewFile();
 	}
 	
+	public static String [] getLeagueNames(int adminNo)
+	{
+		String [] arrayOfDetails=readFile(leagueFile).split(",");
+		String [] leagueNames= new String [getNumberOfLeaguesMade()];
+		int counter=0;
+		int adminPosition=0;
+		int adminLastPosition=0;
+		boolean found=false;
+		boolean sameAdmin=true;
+		int temp=0;
+		for(int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
+		{
+			temp=Integer.parseInt(arrayOfDetails[i]);
+			if(temp==adminNo)
+			{
+				found=true;
+				adminPosition=i;
+			}
+		}
+		for(int i=adminPosition;i<arrayOfDetails.length&&found==true;i=i+3)
+		{
+			temp=Integer.parseInt(arrayOfDetails[i]);
+			if(temp!=adminNo)
+			{
+				found=false;
+				adminLastPosition=i;
+			}
+
+		}
+		for(int i=adminPosition;i<arrayOfDetails.length&&i<adminLastPosition&&sameAdmin==true;i=i+3)
+		{
+			leagueNames[counter]=arrayOfDetails[i+1];
+			counter++;
+		}
+		return leagueNames;
+	}
+	
+	public static int optionBoxs(String[] options,String whatYouWantItToSay)
+	{
+        int result = JOptionPane.showOptionDialog(null, whatYouWantItToSay, "League Manager", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        return result;
+	}
+
 }
