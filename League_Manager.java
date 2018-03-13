@@ -223,43 +223,6 @@ public class LoginDev
 	}
 */
 	
-	
-	public static void editResults() //Not Working yet
-	{
-		int choice = 0;
-		String [] yesNo = {"yes", "no"};
-		boolean resultExists = false;
-		String matchNumberChoice ="";
-		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
-		resultsFileName = leagueNumber +"_Results.txt";
-		matchNumberChoice = JOptionPane.showInputDialog(null, "Enter fixture number to edit");
-		resultExists = readFile(resultsFileName, matchNumberChoice, 0);
-		if (resultExists == true)
-		{
-				
-			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?");
-				
-			if (choice == 0) //If yes
-			{
-			//will put method to remove existing fixture result and overwrite it
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
-			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
-			writeFile(output,resultsFileName);
-			editResults();	
-			}
-			
-		}
-		else 
-		{
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
-			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
-			writeFile(output,resultsFileName);
-			editResults();
-		}
-	}
-	
 		public static void writeFile(String input, String fileName)
 		{
 		try
