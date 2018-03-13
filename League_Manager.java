@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.util.*;
 public class League
 {
-	private static int currentAdminNo=1;
+	private static int currentAdminNo;
 	final static String leagueFile="league.txt";
 	final static String adminFile="administrator.txt";
 	private static String item1;
@@ -149,84 +149,76 @@ public class League
 	
 	public static void fixtureGeneration()throws IOException
 	{
-		String info=""; 
-		String fixtureFileInfo=""; 
-		String fixtureGenerationFileName="";
-		int numberOfTeams=0;
-		String teamFileName="";
-		int totalNumberOfRounds=0;
-		int numberOfMatchesPerRound=0;
-		int roundNumber=0;
-		int matchNumber=0;
-		int homeTeamNumber=0;
-		int awayTeamNumber=0;
-		int even=0;
-		int odd=0;
-		boolean additionalTeamIncluded=false;
-		String [][] fixtures;
-		String [][]revisedFixtures;
-		String [] elementOfFixture;
-		String fixtureAsText="";
-		int whichLeague=menuBoxInt("Enter which league number to generate fixtures for:");
-		fixtureGenerationFileName=whichLeague+"_"+"fixtures.txt";
-		teamFileName=whichLeague+"_participants.txt";
-		if(getNumberOfLeaguesMade()<whichLeague)
-		{
-			outputBoxs("You did not create this league, access denied.");
-		}
-		else
-		{
-			numberOfTeams=getNumberOfTeams(teamFileName);
-			if (numberOfTeams%2==1)
-			{
-				numberOfTeams++;
-				additionalTeamIncluded=true;
-			}
-			totalNumberOfRounds=numberOfTeams-1;
-			numberOfMatchesPerRound=numberOfTeams/2;
-			fixtures=new String[totalNumberOfRounds][numberOfMatchesPerRound];
-			for(roundNumber=0; roundNumber<totalNumberOfRounds;roundNumber++)
-			{
-				for(matchNumber=0;matchNumber<numberOfMatchesPerRound;matchNumber++)
-				{
-					homeTeamNumber=(roundNumber+matchNumber)%(numberOfTeams-1);
-					awayTeamNumber=(numberOfTeams-1-matchNumber+roundNumber)%(numberOfTeams-1);
-					if(matchNumber==0)
-						awayTeamNumber=numberOfTeams-1;
-					fixtures[roundNumber][matchNumber]=(homeTeamNumber+1)+"v"+(awayTeamNumber+1);
-				}
-			}
-			revisedFixtures=new String[totalNumberOfRounds][numberOfMatchesPerRound];
-			even=0;
-			odd=numberOfTeams/2;
-			for(int i=0;i<fixtures.length;i++)
-			{
-				if(i%2==0)
-					revisedFixtures[i]=fixtures[even++];
-				else
-			revisedFixtures[i]=fixtures[odd++];
-			}
-			fixtures=revisedFixtures;
-			for(roundNumber=0;roundNumber<fixtures.length;roundNumber++)
-			{
-				if(roundNumber%2==1)
-				{
-					fixtureAsText=fixtures[roundNumber][0];
-					elementOfFixture=fixtureAsText.split("v");
-					fixtures[roundNumber][0]=elementOfFixture[1]+"v"+elementOfFixture[0];
-				}
-			}
-			int matchCounter=1;
-			for(roundNumber=0;roundNumber<totalNumberOfRounds;roundNumber++)
-			{
-				for(matchNumber=0;matchNumber<numberOfMatchesPerRound;matchNumber++)
-				{
+	int numberOfTeams, totalNumberOfRounds, numberOfMatchesPerRound;
+    int roundNumber;
+	int matchNumber=0;
+	int homeTeamNumber, awayTeamNumber, even, odd;
+    boolean additionalTeamIncluded = false;
+	String [] poop=readFile(leagueFile,"1",0,1);
+	int whichLeague=optionBoxs(poop,"Select a league:");
+	whichLeague=whichLeague+1;
+	String teamFileName=whichLeague+"_participants.txt";
+	String fixtureGenerationFileName=whichLeague+"_fixtures.txt";
+    int selection=getNumberOfTeams(teamFileName);
+    String [][] fixtures;
+    String [][] revisedFixtures;
+    String []   elementsOfFixture;
+    String fixtureAsText;
+	String info="";
+    if (selection != 0)
+    {
+       numberOfTeams = selection; 
+       if (numberOfTeams % 2 == 1)
+       {
+	     numberOfTeams++;
+	     additionalTeamIncluded = true;
+       }
+	   totalNumberOfRounds     = numberOfTeams - 1;
+       numberOfMatchesPerRound = numberOfTeams / 2;
+       fixtures = new String[totalNumberOfRounds][numberOfMatchesPerRound];  
+        
+       for (roundNumber = 0; roundNumber < totalNumberOfRounds; roundNumber++) 
+       {
+         for (matchNumber = 0; matchNumber < numberOfMatchesPerRound; matchNumber++) 
+	     {
+           homeTeamNumber = (roundNumber + matchNumber) % (numberOfTeams - 1);
+		   awayTeamNumber = (numberOfTeams - 1 - matchNumber + roundNumber) % (numberOfTeams - 1);
+           if (matchNumber == 0) 
+             awayTeamNumber = numberOfTeams - 1;
+		   fixtures[roundNumber][matchNumber] = (homeTeamNumber + 1) + "," + (awayTeamNumber + 1);
+         }
+       } 
+	   revisedFixtures = new String[totalNumberOfRounds][numberOfMatchesPerRound];
+       even = 0;
+       odd = numberOfTeams / 2;
+       for (int i = 0; i < fixtures.length; i++) 
+       {
+         if (i % 2 == 0) 	
+           revisedFixtures[i] = fixtures[even++];
+         else 				
+           revisedFixtures[i] = fixtures[odd++];
+       }
+       fixtures = revisedFixtures;
+       int matchCounter=1;
+       for (roundNumber = 0; roundNumber < fixtures.length; roundNumber++) 
+       {
+         if (roundNumber % 2 == 1) 
+	     {
+	       fixtureAsText = fixtures[roundNumber][0];
+	       elementsOfFixture = fixtureAsText.split(",");
+           fixtures[roundNumber][0] = elementsOfFixture[1] + "," + elementsOfFixture[0];
+	     }
+       }
+		for (roundNumber = 0; roundNumber < totalNumberOfRounds; roundNumber++) 
+       {
+		   for (matchNumber = 0; matchNumber < numberOfMatchesPerRound; matchNumber++) 
+		    {
 					info=matchCounter+",";
-					info=info+fixtures[roundNumber][matchNumber].substring(0,1)+","+fixtures[roundNumber][matchNumber].substring(2,3);
+					info=info+fixtures[roundNumber][matchNumber];
 					writeFile(info,fixtureGenerationFileName);
-					matchCounter++;
-				}
-			}
+					matchCounter++;	   
+			}	
+	   }
 		}
 	}
 
@@ -334,42 +326,6 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 			adminFile.createNewFile();
 	}
 	
-	public static String [] getLeagueNames(int adminNo)throws IOException
-	{
-		String [] arrayOfDetails=readFile(leagueFile).split(",");
-		String [] leagueNames= new String [getNumberOfLeaguesMade()];
-		int counter=0;
-		int adminPosition=0;
-		int adminLastPosition=0;
-		boolean found=false;
-		boolean sameAdmin=true;
-		int temp=0;
-		for(int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
-		{
-			temp=Integer.parseInt(arrayOfDetails[i]);
-			if(temp==adminNo)
-			{
-				found=true;
-				adminPosition=i;
-			}
-		}
-		for(int i=adminPosition;i<arrayOfDetails.length&&found==true;i=i+3)
-		{
-			temp=Integer.parseInt(arrayOfDetails[i]);
-			if(temp!=adminNo)
-			{
-				found=false;
-				adminLastPosition=i;
-			}
-
-		}
-		for(int i=adminPosition;i<arrayOfDetails.length&&i<adminLastPosition&&sameAdmin==true;i=i+3)
-		{
-			leagueNames[counter]=arrayOfDetails[i+1];
-			counter++;
-		}
-		return leagueNames;
-	}
 	
 	public static int optionBoxs(String[] options,String whatYouWantItToSay)
 	{
@@ -412,4 +368,32 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 		return verified ;
 	}
 
+	 public static String[] readFile(String textFile, String searchedItem, int itemPositionNo, int returnedItemNo)  
+	 {
+		 String x="";
+		 try
+		 {
+	        FileReader reader=new FileReader(textFile);
+			Scanner in=new Scanner(reader);
+			while(in.hasNext())
+			{    
+		        String fileText= in.nextLine();
+		        String[] split = fileText.split(","); 
+				if (split[itemPositionNo].equals(searchedItem))
+				{
+					// if true store the item in position returnedItemNo
+					x += split[returnedItemNo]+",";
+					
+				}
+				
+			}
+			in.close();
+			reader.close();		
+            
+		 }
+		 catch (Exception e)
+		 {}
+		 String[] returned = x.split(",");
+		 return returned;
+    } 
 }
