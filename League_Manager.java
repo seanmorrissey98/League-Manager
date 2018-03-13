@@ -135,7 +135,7 @@ public class League
 		String teamName=""; 
 		String teamFileInfo=""; 
 		String teamFileName="";
-		int whichLeague=getNumberOfLeaguesMade()+1;
+		int whichLeague=getNumberOfLeaguesMade();
 		teamFileName=whichLeague+"_participants.txt";
 		int numberOfTeams=menuBoxInt("Enter the amount of teams/players:");
 			for(int i=0;i<numberOfTeams;i++)
