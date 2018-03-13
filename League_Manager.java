@@ -245,27 +245,6 @@ public class LoginDev
 	}	
 		
 	}
-/* TESTING IGNORE	
-	public static void displayResults()
-	{
-		String temp = "";
-		String fixtureNumber, homeScore, awayScore;
-		FileReader test = newFileReader("1_Results.txt");
-		Scanner testing = new Scanner(testing);
-		while (testing.hasNext())
-		{
-			int firstComma = temp.indexOf(",");
-			int secondComma = temp.indexOf(",", firstComma+1);
-			temp = testing.nextLine();
-			
-			fixtureNumber = temp.substring(0, firstComma);
-			homeScore = temp.substring(firstComma+1, secondComma);
-			awayScore = temp.substring(secondComma+1);
-			
-			System.out.println("Fixture: " + fixtureNumber + "\tHome Score: " + homeScore + "\tAway Score: " + awayScore);
-		}
-	}
-*/
 	
 		public static void writeFile(String input, String fileName)
 		{
