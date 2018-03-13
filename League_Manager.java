@@ -117,42 +117,6 @@ public class LoginDev
 		return found;
 	}
 	
-	public static void editResults() 
-	{
-		int choice = 0;
-		String [] yesNo = {"yes", "no"};
-		boolean resultExists = false;
-		String matchNumberChoice ="";
-		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
-		resultsFileName = leagueNumber +"_Results.txt";
-		matchNumberChoice = JOptionPane.showInputDialog(null, "Enter fixture number to edit");
-		resultExists = readFile(resultsFileName, matchNumberChoice, 0);
-		if (resultExists == true)
-		{
-				
-			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?");
-				
-			if (choice == 0) //If yes
-			{
-			removeLineFromFile(resultsFileName, matchNumberChoice, 0);
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
-			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
-			writeFile(output,resultsFileName);
-			editResults();	
-			}
-			
-		}
-		else 
-		{
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
-			String output = matchNumberChoice + "," + homeScore + "," + awayScore;
-			writeFile(output,resultsFileName);
-			editResults();
-		}
-	}		
-	
 	public static void displayFixtures(String leagueChoice) //CAN ADAPT FOR EDIT RESULTS ALSO
 	{
 		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
@@ -195,6 +159,44 @@ public class LoginDev
 		}
 		catch(Exception e)
 		{}
+	}
+	
+		public static void editResults() 
+	{
+		int choice = 0;
+		int fixtureChoice = 0;
+		String [] yesNo = {"yes", "no"};
+		boolean resultExists = false;
+		String matchNumberChoice = "";
+		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit"); // MENU FOR LEAGUE EDITING TO PASS IN LEAGUE NUMBER NEEDED
+		String [] fixtureDisplay = displayFixtures(leagueNumber);
+		String resultsFileName = leagueNumber + "_Results.txt";
+		fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]);
+		matchNumberChoice = Integer.toString(fixtureChoice);
+		resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
+		if (resultExists == true)
+		{		
+			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?");	
+			if (choice == 0) //If yes
+			{
+			removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
+			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
+			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
+			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
+			writeFile(output,resultsFileName);
+			//Give option to edit others or back out of menu
+			}
+			//ELSE TO BACK OUT TO MENU OPTIONS
+		}
+		else 
+		{
+			String homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+			String awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
+			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
+			writeFile(output,resultsFileName);
+
+			//Give option to edit others or back out of menu
+		}
 	}
 	
 	public static void removeLineFromFile(String fileName, String toDel, int pos) //Params file name, String to delete, position of string
