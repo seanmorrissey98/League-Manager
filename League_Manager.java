@@ -152,7 +152,51 @@ public class LoginDev
 			editResults();
 		}
 	}		
-		
+	
+	public static void displayFixtures(String leagueChoice) //CAN ADAPT FOR EDIT RESULTS ALSO
+	{
+		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
+		teams.add(new ArrayList<String>());
+		teams.add(new ArrayList<String>());
+		String temp = "";
+		String homeTeam = "", awayTeam = "";
+		String currentLeagueFixtures = leagueChoice + "_fixtures.txt"; 
+		String currentLeagueParticipants = leagueChoice + "_participants.txt";
+		String [] fileElements;
+		Scanner in;
+		FileReader read;
+		String [] fixtureDisplay;
+		int fixtureCount = 0;
+		try
+		{
+			read = new FileReader(currentLeagueFixtures);
+			in = new Scanner(read);
+			while(in.hasNext())
+			{
+				fixtureCount++;
+				fileElements = in.nextLine().split(",");
+				teams.get(0).add(fileElements[1]);
+				teams.get(1).add(fileElements[2]);
+			}
+
+			read.close();
+			in.close();	
+			
+			fixtureDisplay = new String[fixtureCount];
+			for (int i = 0;i< fixtureCount;i++)
+			{	
+				homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), currentLeagueParticipants);
+				awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(i)), currentLeagueParticipants);
+				//JOptionPane.showMessageDialog(null, homeTeam + " V " + awayTeam);
+				fixtureDisplay[i] = (homeTeam + " - " + awayTeam);
+			}
+			System.out.println(Arrays.toString(fixtureDisplay));
+			//Need to display fixtures in JOptionPane
+		}
+		catch(Exception e)
+		{}
+	}
+	
 	public static void removeLineFromFile(String fileName, String toDel, int pos) //Params file name, String to delete, position of string
 	{
 		try {
