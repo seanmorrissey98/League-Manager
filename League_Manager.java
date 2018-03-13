@@ -238,6 +238,52 @@ public class LoginDev
 		{}
 		}
 		
+
+	public static void displayResults()
+	{
+		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
+		String temp = "";
+		String homeTeam = "", awayTeam = "";
+		String [] fileElements;
+		Scanner in;
+		FileReader read;
+		try
+		{
+			System.out.println("test case");
+			read = new FileReader("1_fixtures.txt");
+			in = new Scanner(read);
+			while(in.hasNext())
+			{
+				temp = in.nextLine();
+				System.out.println("uijq");
+				fileElements = (temp.split(","));
+				System.out.println(Arrays.toString((fileElements)));
+				teams.get(0).add(fileElements[1]); //home Teams
+				System.out.println("sd");
+				teams.get(1).add(fileElements[2]);
+				System.out.println("12345");
+			}
+			System.out.println("123");
+			read.close();
+			in.close();	
+			
+			for (int i = 0;i< teams.size();i++)
+			{	
+				System.out.println("Tester");
+				for (int j=0;j<teams.get(i).size();j++)
+				{
+					System.out.println("Test");
+					homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), "1_participants.txt");
+					awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(j)), "1_participants.txt");
+					JOptionPane.showMessageDialog(null, homeTeam + " V " + awayTeam);
+				}
+			
+			}
+		}
+		catch(Exception e)
+		{}
+	}
+
 		
 	public static void overwriteFile(String file, String toDel)
 	{
