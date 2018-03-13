@@ -1439,42 +1439,56 @@ public class gui
 		String [] initialOptions= { "1-create league", "2-Edit/view League", "3-Remove League", "4-Exit Application" };
 		String [] subOptions={" 1-Fixture Generation", "2-View Table", "3-Input results", "4-Exit Application"};
 		String []subOptionsOfSubOptions={ "1-input reults", "2-edit results","3-Exit Application"};
-		int x=optionBoxs(initialOptions,"Choose an option");
-		int y=0;
-		int z=0;
 		
-		switch (x)
-		{
-			case 0: createNewLeague();
-		    break;
-			case 1: y=optionBoxs(subOptions,"Choose an option");
+		
+		boolean main = true;
+		while(main)  // && not null 
+		{	
+		    int x=optionBoxs(initialOptions,"Choose an option");
+		    int y=0;
+		    int z=0;
+		
+		    switch (x)
+		    {
+			    case 0: createNewLeague();
+		        break;
+			    case 1: y=optionBoxs(subOptions,"Choose an option");
 			
-			switch (y)
-			{
-				case 0: fixtureGeneration();
+			    switch (y)
+			    {
+					case 0: fixtureGeneration();
+					break;
+					case 1: displayTable();
+					break;
+					case 2: z=optionBoxs(subOptionsOfSubOptions,"Choose an option");
+						switch (z)
+						{
+							case 0: inputResults();
+							break;
+							case 1: editResults();
+							break;
+							case 2: 
+		                    break;
+							case 3: main = false;
+							break;
+							
+						}
+					case 3: break;
+					case 4: main = false;
+					break;
+
+				}
+
 				break;
-				case 1: displayTable();
+				case 2: removeLeague();
 				break;
-				case 2: z=optionBoxs(subOptionsOfSubOptions,"Choose an option");
-					switch (z)
-					{
-						case 0: inputResults();
-						break;
-						case 1: editResults();
-						break;
-						case 2: break;
-					}
-				case 3: break;
+				case 3: main = false; 
+				break;
 
 			}
-
-			 break;
-			 case 2: removeLeague();
-			 break;
-			 case 3: break;
-
-		}
+			
 		
+		}
 		}
 		
 	
