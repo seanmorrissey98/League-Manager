@@ -14,8 +14,58 @@ public class League
 	String username = JOptionPane.showInputDialog(null, "Enter username");
 	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
 	boolean isLoggedIn = loginMethod(username, password);
-	createNewLeague();
-	fixtureGeneration();
+	if(isLoggedIn)
+	{
+	String [] initialOptions= { "1-create league", "2-Edit/view League", "3-Remove League", "4-Exit Application" };
+		 String [] subOptions={" 1-Fixture Generation", "2-View Table", "3-Input results", "4-Add/remove teams", "5-Exit Application"};
+		String []subOptionsOfSubOptions={ "1-Add teams", "2-remove teams","3-Exit Application"};
+	        boolean main = true;
+		while(main)  // && not null 
+		{	
+		    int x=optionBoxs(initialOptions,"Choose an option");
+		    int y=0;
+		    int z=0;
+		
+		    switch (x)
+		    {
+			    case 0: createNewLeague();
+		        break;
+			    case 1: y=optionBoxs(subOptions,"Choose an option");
+			
+			    switch (y)
+			    {
+					case 0: fixtureGeneration();
+					break;
+					case 1: outputBoxs("yes");//displayTable();
+					break;
+					case 2: z=optionBoxs(subOptionsOfSubOptions,"Choose an option");
+						switch (z)
+						{
+							case 0: outputBoxs("yes");//inputResults();
+							break;
+							case 1: outputBoxs("yes");//editResults();
+							break;
+							case 2: 
+		                    break;
+							case 3: main = false;
+							break;
+							
+						}
+					case 3: break;
+					case 4: main = false;
+					break;
+
+				}
+
+				break;
+				case 2: outputBoxs("yes");//removeLeague();
+				break;
+				case 3: main = false; 
+				break;
+
+				}
+			}
+		}
 	}
 	
 		 
@@ -57,6 +107,7 @@ public class League
 		leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
 		writeFile(leagueFileInput,leagueFile);
 		addTeamsToLeague();
+		outputBoxs(leagueName+" has been created.");
 	}
 	
 	public static int getNumberOfLeaguesMade()throws IOException
