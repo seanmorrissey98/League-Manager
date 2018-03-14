@@ -117,49 +117,57 @@ public class LoginDev
 		return found;
 	}
 	
-	public static void displayFixtures(String leagueChoice) //CAN ADAPT FOR EDIT RESULTS ALSO
+	public static void displayFixtures()
+	{
+		String leagueChoice = "1";
+		String [] fixturesFormatted = readFixtures(leagueChoice); //FIXTURES FORMATTED AS "HOME - AWAY"
+		//DISPLAY FIXTURES HERE
+	}
+	
+	public static String[] readFixtures(String leagueChoice)
 	{
 		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
 		teams.add(new ArrayList<String>());
 		teams.add(new ArrayList<String>());
-		String temp = "";
 		String homeTeam = "", awayTeam = "";
-		String currentLeagueFixtures = leagueChoice + "_fixtures.txt"; 
+		String currentLeagueFixtures = leagueChoice + "_fixtures.txt";
 		String currentLeagueParticipants = leagueChoice + "_participants.txt";
 		String [] fileElements;
 		Scanner in;
 		FileReader read;
-		String [] fixtureDisplay;
+		String[] fixtureDisplay = {""};
+		
 		int fixtureCount = 0;
 		try
 		{
 			read = new FileReader(currentLeagueFixtures);
 			in = new Scanner(read);
-			while(in.hasNext())
+			while (in.hasNext())
 			{
 				fixtureCount++;
 				fileElements = in.nextLine().split(",");
 				teams.get(0).add(fileElements[1]);
 				teams.get(1).add(fileElements[2]);
 			}
-
 			read.close();
-			in.close();	
+			in.close();
 			
 			fixtureDisplay = new String[fixtureCount];
-			for (int i = 0;i< fixtureCount;i++)
-			{	
+			for (int i = 0;i < fixtureCount;i++)
+			{
 				homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), currentLeagueParticipants);
 				awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(i)), currentLeagueParticipants);
-				//JOptionPane.showMessageDialog(null, homeTeam + " V " + awayTeam);
 				fixtureDisplay[i] = (homeTeam + " - " + awayTeam);
+				System.out.print(fixtureDisplay[i]);
 			}
-			System.out.println(Arrays.toString(fixtureDisplay));
-			//Need to display fixtures in JOptionPane
 		}
+		
 		catch(Exception e)
 		{}
+	return fixtureDisplay;	
 	}
+	
+	
 	
 		public static void editResults() 
 	{
