@@ -1,86 +1,5 @@
 // Paul's code so far.Got the gui roughlygoing.Only made up mock versions of methods to make sure it works.
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import javax.swing.JOptionPane;
-import java.util.Arrays;
-import java.util.*;
-public class gui
-{
-	public static void main(String[]args)
-	{   
-        String initialOptions= " 1-create league \n 2-Edit/view League \n 3-Remove League \n 4-Exit Application ";
-		String subOptions=" 1-Fixture Generation \n 2-View Table 3-Input results \n 4-Add/remove teams \n 5-number of leagues made";
-		String subOptionsOfSubOptions=" 1-Add teams 2-remove teams";
-		
-		
-	
-		//if (logIn("Enter your username and password"))=true; // thomas method
-		//{
-			int x=menuBoxInt(initialOptions);
-			if (x== 1)
-			{
-				createNewLeague();
-			}
-			if (x==2)
-			{
-				int y=menuBoxInt(subOptions);
-				if (y==1)
-				{
-					String r=menuBox("genfix");
-					generateFixtures(r);
-				}
-				if (y==2)
-				{
-					String v=menuBox("gentable");
-					generateTable(v);
-				}
-				if (y==3)
-				{
-					String r=menuBox("displayTable");
-					displayTable(r);
-				}
-				if (y==4)
-				{
-					int z=menuBoxInt(subOptionsOfSubOptions);
-					if (z==1)
-					{
-					 String r=menuBox("addTeamsToLeague");
-					 addTeamsToLeague(r);	
-					}
-					if (z==2)
-					{
-						String r=menuBox("addTeamsToLeague");
-						removeTeamsFromLeague(r);
-					}
-				}
-				if (y==5)
-				{
-					getNumberOfLeaguesMade();
-				}
-			}
-			
-			if (x==3)
-			{
-				String r=menuBox("addTeamsToLeague");
-				removeLeague(r);
-			}
-			if (x==4)
-			{
-				System.exit(0);
-			}
-			
-				else 
-				{
-					outputBoxs("Number outside 1-5");
-				}
-		}
-			
-			
-		//}
+
 	
 	
 	public static int menuBoxInt(String options)
@@ -1900,7 +1819,664 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 	 
 	
 	
+	import java.io.*;
+import javax.swing.*;
+import java.util.*;
+public class newestversion
+{
+	private static int currentAdminNo;
+	final static String leagueFile="league.txt";
+	final static String adminFile="administrator.txt";
+	private static String item1;
+	public static ArrayList<ArrayList<String>>  teams;
+    public static ArrayList<ArrayList<Integer>> fixtures;	
+    public static ArrayList<ArrayList<Integer>> results;
+    public static int [][] leaderBoard;
 	
+	public static void main(String [] args)throws IOException
+	{
+	checkIfExists(adminFile);
+	String username = JOptionPane.showInputDialog(null, "Enter username");
+	String password = JOptionPane.showInputDialog(null, "Enter password"); //Will work on method for hidden password input in swing
+	boolean isLoggedIn = loginMethod(username, password);
+	if(isLoggedIn)
+	{
+	String [] initialOptions= { "1-create league", "2-Edit/view League", "3-Remove League", "4-Exit Application" };
+		 String [] subOptions={" 1-Fixture Generation", "2-View Table", "3-Input results", "4-Add/remove teams", "5-Exit Application"};
+		String []subOptionsOfSubOptions={ "1-Add teams", "2-remove teams","3-Exit Application"};
+	        boolean main = true;
+		while(main)  // && not null 
+		{	
+		    int x=optionBoxs(initialOptions,"Choose an option");
+		    int y=0;
+		    int z=0;
+		
+		    switch (x)
+		    {
+			    case 0: createNewLeague();
+		        break;
+			    case 1: y=optionBoxs(subOptions,"Choose an option");
+			
+			    switch (y)
+			    {
+					case 0: fixtureGeneration();
+					break;
+					case 1: generateTable();//displayTable();
+					break;
+					case 2: z=optionBoxs(subOptionsOfSubOptions,"Choose an option");
+						switch (z)
+						{
+							case 0: outputBoxs("yes");//inputResults();
+							break;
+							case 1: outputBoxs("yes");//editResults();
+							break;
+							case 2: 
+		                    break;
+							case 3: main = false;
+							break;
+							
+						}
+					case 3: break;
+					case 4: main = false;
+					break;
+
+				}
+
+				break;
+				case 2: outputBoxs("yes");//removeLeague();
+				break;
+				case 3: main = false; 
+				break;
+
+				}
+			}
+		}
+	}
+	
+		 
+		 public static void writeFile(String input, String fileName)
+		 {
+		 try
+		 {
+		     FileWriter aFileWriter = new FileWriter(fileName,true);
+             PrintWriter out = new PrintWriter(aFileWriter);
+			 out.print(input);
+			 out.println();
+			 out.close();
+			 aFileWriter.close();
+        			
+		 }
+		 catch(Exception e)
+		 {}
+		 }
+		 
+	 public static String menuBox(String Options)
+	 {
+		 String input="";
+		 input=JOptionPane.showInputDialog(null,Options);
+		 return input;
+	 }
+	 
+	 public static int menuBoxInt(String options)
+	{
+		String text = JOptionPane.showInputDialog(null, options);
+		int x = Integer.parseInt(text);
+		return x;
+	}
+	
+	public static void createNewLeague()throws IOException
+	{
+		String leagueName=""; 
+		String leagueFileInput="";
+		leagueName=menuBox("Enter your league name:");
+		leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
+		writeFile(leagueFileInput,leagueFile);
+		addTeamsToLeague();
+		outputBoxs(leagueName+" has been created.");
+	}
+	
+	public static int getNumberOfLeaguesMade()throws IOException
+	{
+		boolean sameAdmin=true;
+		boolean found=false;
+		int currentAdminPostion=0;
+		int temp=0;
+		int numberOfLeagues=0;
+		File leagueFilers = new File(leagueFile);
+		if (!(leagueFilers.exists()))
+		{
+			leagueFilers.createNewFile();
+		}
+		else
+		{
+		String [] arrayOfDetails=readFile(leagueFile).split(",");
+		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
+		{
+			temp=Integer.parseInt(arrayOfDetails[i]);
+			if(temp==currentAdminNo)
+			{
+				found=true;
+				currentAdminPostion=i;
+			}
+		}
+		for(int i=currentAdminPostion;i<arrayOfDetails.length && sameAdmin==true;i=i+3)
+		{
+			if(currentAdminNo!=Integer.parseInt(arrayOfDetails[i]))
+			{
+				sameAdmin=false;
+			}
+			else
+			{
+				numberOfLeagues=Integer.parseInt(arrayOfDetails[i+2]);
+			}
+		}
+		}
+		return numberOfLeagues;
+	}
+	
+	public static String readFile(String textFile)
+	{
+		String fileText="";
+		String ass="";
+		try
+		{
+		FileReader reader=new FileReader(textFile);
+		Scanner in=new Scanner(reader);
+		while(in.hasNext())
+		{
+			ass=in.nextLine();
+			fileText=fileText+ass+",";
+		}
+		in.close();
+		reader.close();
+		}
+		catch(Exception e)
+		{}
+		return fileText;
+	}
+	
+	public static void outputBoxs(String output)
+	{
+	     JOptionPane.showMessageDialog(null, output);	
+	}
+	
+	public static void outputBoxs(int output)
+	{
+		JOptionPane.showMessageDialog(null,output);
+	}
+	
+	public static void addTeamsToLeague()throws IOException
+	{
+		String info=""; 
+		String teamName=""; 
+		String teamFileInfo=""; 
+		String teamFileName="";
+		int whichLeague=getNumberOfLeaguesMade();
+		teamFileName=whichLeague+"_participants.txt";
+		int numberOfTeams=menuBoxInt("Enter the amount of teams/players:");
+			for(int i=0;i<numberOfTeams;i++)
+			{
+				info="enter team/player number:"+(i+1);
+				teamName=menuBox(info);
+				teamFileInfo=(i+1)+","+teamName;
+				writeFile(teamFileInfo,teamFileName);
+			}
+	}
+	
+	public static void fixtureGeneration()throws IOException
+	{
+	int numberOfTeams, totalNumberOfRounds, numberOfMatchesPerRound;
+    int roundNumber;
+	int matchNumber=0;
+	int homeTeamNumber, awayTeamNumber, even, odd;
+    boolean additionalTeamIncluded = false;
+	String [] poop=readFile(leagueFile,"1",0,1);
+	int whichLeague=optionBoxs(poop,"Select a league:");
+	whichLeague=whichLeague+1;
+	String teamFileName=whichLeague+"_participants.txt";
+	String fixtureGenerationFileName=whichLeague+"_fixtures.txt";
+    int selection=getNumberOfTeams(teamFileName);
+    String [][] fixtures;
+    String [][] revisedFixtures;
+    String []   elementsOfFixture;
+    String fixtureAsText;
+	String info="";
+    if (selection != 0)
+    {
+       numberOfTeams = selection; 
+       if (numberOfTeams % 2 == 1)
+       {
+	     numberOfTeams++;
+	     additionalTeamIncluded = true;
+       }
+	   totalNumberOfRounds     = numberOfTeams - 1;
+       numberOfMatchesPerRound = numberOfTeams / 2;
+       fixtures = new String[totalNumberOfRounds][numberOfMatchesPerRound];  
+        
+       for (roundNumber = 0; roundNumber < totalNumberOfRounds; roundNumber++) 
+       {
+         for (matchNumber = 0; matchNumber < numberOfMatchesPerRound; matchNumber++) 
+	     {
+           homeTeamNumber = (roundNumber + matchNumber) % (numberOfTeams - 1);
+		   awayTeamNumber = (numberOfTeams - 1 - matchNumber + roundNumber) % (numberOfTeams - 1);
+           if (matchNumber == 0) 
+             awayTeamNumber = numberOfTeams - 1;
+		   fixtures[roundNumber][matchNumber] = (homeTeamNumber + 1) + "," + (awayTeamNumber + 1);
+         }
+       } 
+	   revisedFixtures = new String[totalNumberOfRounds][numberOfMatchesPerRound];
+       even = 0;
+       odd = numberOfTeams / 2;
+       for (int i = 0; i < fixtures.length; i++) 
+       {
+         if (i % 2 == 0) 	
+           revisedFixtures[i] = fixtures[even++];
+         else 				
+           revisedFixtures[i] = fixtures[odd++];
+       }
+       fixtures = revisedFixtures;
+       int matchCounter=1;
+       for (roundNumber = 0; roundNumber < fixtures.length; roundNumber++) 
+       {
+         if (roundNumber % 2 == 1) 
+	     {
+	       fixtureAsText = fixtures[roundNumber][0];
+	       elementsOfFixture = fixtureAsText.split(",");
+           fixtures[roundNumber][0] = elementsOfFixture[1] + "," + elementsOfFixture[0];
+	     }
+       }
+		for (roundNumber = 0; roundNumber < totalNumberOfRounds; roundNumber++) 
+       {
+		   for (matchNumber = 0; matchNumber < numberOfMatchesPerRound; matchNumber++) 
+		    {
+					info=matchCounter+",";
+					info=info+fixtures[roundNumber][matchNumber];
+					writeFile(info,fixtureGenerationFileName);
+					matchCounter++;	   
+			}	
+	   }
+		}
+	}
+
+	public static int getNumberOfTeams(String teamFileName)
+	{
+		int numberOfTeams=0;
+		String [] arrayOfDetails=readFile(teamFileName).split(",");
+		numberOfTeams=Integer.parseInt(arrayOfDetails[arrayOfDetails.length - 2]);
+		return numberOfTeams;
+	}
+	
+	public static String getTeamName(int teamNumber, String teamFileName)
+	{
+		String teamName="";
+		int arrayNum=0;
+		int positionInArray=1;
+		String [] arrayOfDetails=readFile(teamFileName).split(",");
+		for(int i=0;i<arrayOfDetails.length;i++)
+		{
+			if(i%2==0)
+			{
+				arrayNum=Integer.parseInt(arrayOfDetails[i]);
+				if(teamNumber==arrayNum)
+					positionInArray=i+1;
+			}	
+		}	
+		teamName=arrayOfDetails[positionInArray];
+		return teamName;
+	}
+	
+
+	public static boolean loginMethod(String username, String password)
+	{
+		int maxLoginAttempts = 3;
+		String loginMethod = "";
+		boolean loggedInStatus = false;
+		boolean foundUserDetails = false;
+		
+		for (int i=maxLoginAttempts;i>0;i--)
+		{
+			foundUserDetails = readFile(adminFile, username, password, 1, 2);
+			if (foundUserDetails == true)
+			{
+				currentAdminNo = Integer.parseInt(item1);
+				loggedInStatus = true;
+				JOptionPane.showMessageDialog(null, "Successfully logged in as " + username);
+				break;
+			}
+			else
+			{
+				if (maxLoginAttempts == 1)
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect login details\nNo attempt remaining");
+					break;
+				}	
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect login details\n" + (maxLoginAttempts-1) + " attempt(s) remaining");
+					maxLoginAttempts--;
+					username = JOptionPane.showInputDialog(null, "Enter username");
+					password = JOptionPane.showInputDialog(null, "Enter password");
+					foundUserDetails = readFile(adminFile, username, password, 1, 2);
+				}
+			}
+		}
+		return loggedInStatus;
+	}	
+	
+public static Boolean readFile(String fileName, String str1, String str2, int pos1, int pos2)
+   	{
+		String[] fileElements;	
+		boolean found = false;
+		Scanner in;
+		FileReader read;
+		try
+		{
+
+	        read = new FileReader(fileName);
+			in = new Scanner(read);
+			while(in.hasNext())
+			{    
+		        fileElements= (in.nextLine()).split(",");
+				
+				if (fileElements[pos1].equals(str1) && fileElements[pos2].equals(str2))
+				{
+					found = true;
+					item1 = fileElements[0]; // Admin#, League#, fixture#.
+					break;
+				}
+			}
+			in.close();
+			read.close();	
+		 }
+		 catch (Exception e)
+		 {}
+		
+		return found;
+	}
+	
+	
+	public static void checkIfExists(String fileName)throws IOException
+	{
+		File adminFile = new File(fileName);
+		if (!(adminFile.exists()))
+			adminFile.createNewFile();
+	}
+	
+	
+	public static int optionBoxs(String[] options,String whatYouWantItToSay)
+	{
+        int result = JOptionPane.showOptionDialog(null, whatYouWantItToSay, "League Manager", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        return result;
+	}
+	
+	public static boolean validateNumberInput(String text)
+	{
+		String result="";
+		String pattern="[0-9]{0,10}";
+		String message1 = "A number must be input.";
+	    String message2 = "Format of user input is incorrect, a number  is required.";
+		boolean verified=false;
+		if      (text != null)        
+		{ 
+			if (text.equals(""))   
+			{
+				result = message1;
+				outputBoxs(message1);
+			}
+			else
+			{				
+		
+				if (text.indexOf(" ") != -1) text = text.replaceAll("\\s+","");
+	        	{
+					if (!text.matches(pattern)) 
+					{
+					result = message2;
+					outputBoxs(message2);
+					}
+				
+					else
+					{
+					verified=true;
+					}
+				}
+			}
+		}
+		return verified ;
+	}
+
+	 public static String[] readFile(String textFile, String searchedItem, int itemPositionNo, int returnedItemNo)  
+	 {
+		 String x="";
+		 try
+		 {
+	        FileReader reader=new FileReader(textFile);
+			Scanner in=new Scanner(reader);
+			while(in.hasNext())
+			{    
+		        String fileText= in.nextLine();
+		        String[] split = fileText.split(","); 
+				if (split[itemPositionNo].equals(searchedItem))
+				{
+					// if true store the item in position returnedItemNo
+					x += split[returnedItemNo]+",";
+					
+				}
+				
+			}
+			in.close();
+			reader.close();		
+            
+		 }
+		 catch (Exception e)
+		 {}
+		 String[] returned = x.split(",");
+		 return returned;
+    } 
+	public static void generateTable()throws IOException
+	{
+		boolean readFile; 
+		readFile = readFilesIntoArrayLists();
+		if (!readFile)
+		System.out.println("One or more files do not exist.");
+			else
+			{
+			createEmptyLeaderBoard();
+			processResults();
+			orderLeaderBoard();
+			displayLeaderboard();
+			}
+	}
+	
+	 public static boolean readFilesIntoArrayLists() throws IOException
+  {
+    String filename1 = "Teams20152016.txt";
+    String filename2 = "Fixtures20152016.txt";
+    String filename3 = "Outcomes20152016.txt";
+    
+    String fileElements[];
+	File inputFile1 = new File(filename1);
+	File inputFile2 = new File(filename2);
+	File inputFile3 = new File(filename3);
+	
+	teams = new ArrayList<ArrayList<String>>();
+	teams.add(new ArrayList<String>());
+    teams.add(new ArrayList<String>());
+  
+    fixtures = new ArrayList<ArrayList<Integer>>();
+	fixtures.add(new ArrayList<Integer>());
+    fixtures.add(new ArrayList<Integer>());
+    fixtures.add(new ArrayList<Integer>());
+    
+    results = new ArrayList<ArrayList<Integer>>();
+	results.add(new ArrayList<Integer>());
+    results.add(new ArrayList<Integer>());
+    results.add(new ArrayList<Integer>());
+    
+	if (inputFile1.exists() && inputFile2.exists() && inputFile3.exists())
+	{
+	  Scanner in;
+	  in = new Scanner(inputFile1);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    teams.get(0).add(fileElements[0]);  
+	    teams.get(1).add(fileElements[1]);  
+	  } 
+	  in.close();
+	  in = new Scanner(inputFile2);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    fixtures.get(0).add(Integer.parseInt(fileElements[0]));  
+	    fixtures.get(1).add(Integer.parseInt(fileElements[1]));  
+	    fixtures.get(2).add(Integer.parseInt(fileElements[2]));  
+	  } 
+	  in.close();
+	  in = new Scanner(inputFile3);
+	  while(in.hasNext())
+	  {
+	    fileElements = (in.nextLine()).split(",");
+	    results.get(0).add(Integer.parseInt(fileElements[0]));  
+	    results.get(1).add(Integer.parseInt(fileElements[1]));  
+	    results.get(2).add(Integer.parseInt(fileElements[2]));  
+	  } 
+	  in.close();
+	  return true;
+    }
+    else
+      return false;
+  }
+  
+  public static void createEmptyLeaderBoard()
+  {
+	// find out the number of teams/players which will determine 
+	// the number of rows  
+    int rows = teams.get(0).size();
+	int columns = 14;  
+	leaderBoard = new int[rows][columns];
+	// place team numbers in column 0 of leader board
+	for (int i = 0; i < leaderBoard.length; i++)
+      leaderBoard[i][0] = Integer.parseInt(teams.get(0).get(i));
+  }	  
+  
+  public static void processResults()
+  {
+	int fixtureNumber, homeTeamScore, awayTeamScore, homeTeamNumber, awayTeamNumber;
+	int position;
+	for (int i = 0; i < results.get(0).size(); i++)  
+    {
+	  fixtureNumber  = results.get(0).get(i);
+	  homeTeamScore  = results.get(1).get(i);
+	  awayTeamScore  = results.get(2).get(i);
+	  position       = fixtures.get(0).indexOf(fixtureNumber);
+	  homeTeamNumber = fixtures.get(1).get(position);
+	  awayTeamNumber = fixtures.get(2).get(position);
+	  if (homeTeamScore == awayTeamScore)
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,0,1,0,homeTeamScore,awayTeamScore,1);
+		recordFixtureResultForAwayTeam(awayTeamNumber,0,1,0,homeTeamScore,awayTeamScore,1);
+	  }  
+	  else if (homeTeamScore > awayTeamScore)
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,1,0,0,homeTeamScore,awayTeamScore,3);
+		recordFixtureResultForAwayTeam(awayTeamNumber,0,0,1,homeTeamScore,awayTeamScore,0);  
+	  }  
+	  else
+	  {
+		recordFixtureResultForHomeTeam(homeTeamNumber,0,0,1,homeTeamScore,awayTeamScore,0);
+		recordFixtureResultForAwayTeam(awayTeamNumber,1,0,0,homeTeamScore,awayTeamScore,3);  
+	  }    
+    }
+  }	 
+  
+  public static void recordFixtureResultForHomeTeam(int hTN, int w, int d, int l, 
+                                                       int hTS, int aTS, int p)
+  {
+	leaderBoard[hTN-1][1]++;        			// gamesPlayed
+	leaderBoard[hTN-1][2]+= w;      			// homeWin
+	leaderBoard[hTN-1][3]+= d;      			// homeDraw
+	leaderBoard[hTN-1][4]+= l;      			// homeLoss
+	leaderBoard[hTN-1][5]+= hTS;    			// homeTeamScore
+	leaderBoard[hTN-1][6]+= aTS;    			// awayTeamScore
+	leaderBoard[hTN-1][12] += (hTS - aTS);    	// goalDifference
+	leaderBoard[hTN-1][13] += p;    			// points
+  }
+ 
+  public static void recordFixtureResultForAwayTeam(int aTN, int w, int d, int l, 
+                                                       int hTS, int aTS, int p)
+  {
+	leaderBoard[aTN-1][1]++;        			// gamesPlayed
+	leaderBoard[aTN-1][7]+= w;      			// awayWin
+	leaderBoard[aTN-1][8]+= d;      			// awayDraw
+	leaderBoard[aTN-1][9]+= l;      			// awayLoss
+	leaderBoard[aTN-1][10]+= aTS;    			// awayTeamScore
+	leaderBoard[aTN-1][11]+= hTS;    			// homeTeamScore
+	leaderBoard[aTN-1][12] += (aTS - hTS);    	// goalDifference
+	leaderBoard[aTN-1][13] += p;    			// points  
+  }	
+  
+  public static void orderLeaderBoard()
+  {
+	int [][] temp = new int[leaderBoard.length][leaderBoard[0].length];
+    boolean finished = false;
+    while (!finished) 
+    {
+      finished = true;
+      for (int i = 0; i < leaderBoard.length - 1; i++) 
+      {
+        if (leaderBoard[i][13] < leaderBoard[i + 1][13])
+        {
+          for (int j = 0; j < leaderBoard[i].length; j++) 
+          {
+            temp[i][j]            = leaderBoard[i][j];
+            leaderBoard[i][j]     = leaderBoard[i + 1][j];
+            leaderBoard[i + 1][j] = temp[i][j];
+          }
+          finished = false;
+        }
+      }
+    }
+  }	  
+	  
+  public static void displayLeaderboard()
+  {
+	int aTeamNumber;
+	String aTeamName, formatStringTeamName;
+	String longestTeamName       = teams.get(1).get(0);
+    int    longestTeamNameLength = longestTeamName.length();
+    
+    for (int i = 1; i < teams.get(1).size(); i++)
+    {
+	  longestTeamName = teams.get(1).get(i);  
+      if (longestTeamNameLength < longestTeamName.length())
+        longestTeamNameLength = longestTeamName.length();
+    }
+    formatStringTeamName = "%-" + (longestTeamNameLength + 2) + "s";
+    System.out.printf(formatStringTeamName,"Team Name");
+    System.out.println("  GP  HW  HD  HL  GF  GA  AW  AD  AL  GF  GA   GD   TP"); 
+   
+    for (int i = 0; i < leaderBoard.length; i++)
+    {
+	  aTeamNumber       = leaderBoard[i][0];
+	  aTeamName         = teams.get(1).get(aTeamNumber - 1);       
+      System.out.printf(formatStringTeamName, aTeamName);
+      System.out.printf("%4d", leaderBoard[i][1]);
+      System.out.printf("%4d", leaderBoard[i][2]);
+      System.out.printf("%4d", leaderBoard[i][3]);
+      System.out.printf("%4d", leaderBoard[i][4]);
+      System.out.printf("%4d", leaderBoard[i][5]);
+      System.out.printf("%4d", leaderBoard[i][6]);
+      System.out.printf("%4d", leaderBoard[i][7]);
+	  System.out.printf("%4d", leaderBoard[i][8]);
+      System.out.printf("%4d", leaderBoard[i][9]);
+      System.out.printf("%4d", leaderBoard[i][10]);
+      System.out.printf("%4d", leaderBoard[i][11]);
+      System.out.printf("%5d", leaderBoard[i][12]);
+      System.out.printf("%5d", leaderBoard[i][13]);
+      System.out.println();
+    }
+  } 
+
 
 	
 
