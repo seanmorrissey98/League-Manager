@@ -1845,9 +1845,10 @@ public class newestversion
 		 String [] subOptions={" 1-Fixture Generation", "2-View Table", "3-Input results", "4-Add/remove teams", "5-Exit Application"};
 		String []subOptionsOfSubOptions={ "1-Add teams", "2-remove teams","3-Exit Application"};
 	        boolean main = true;
-		while(main)  // && not null 
+		int x=0;
+		while(main&&x==0||x==1||x==2||x==3)  // && not null 
 		{	
-		    int x=optionBoxs(initialOptions,"Choose an option");
+		    x=optionBoxs(initialOptions,"Choose an option");
 		    int y=0;
 		    int z=0;
 		
@@ -1876,6 +1877,7 @@ public class newestversion
 							break;
 							
 						}
+					    break;
 					case 3: break;
 					case 4: main = false;
 					break;
