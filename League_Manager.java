@@ -118,10 +118,17 @@ public class LoginDev
 	}
 	
 	public static void displayFixtures()
+	//FIX JOP DISPLAY*********************
 	{
-		String leagueChoice = "1";
+		String temp = "";
+		String leagueChoice = JOptionPane.showInputDialog(null, "Enter league number to edit"); //FIX LEAGUE NUMBER CHOICE METHOD
 		String [] fixturesFormatted = readFixtures(leagueChoice); //FIXTURES FORMATTED AS "HOME - AWAY"
 		//DISPLAY FIXTURES HERE
+		for (int i = 0;i < fixturesFormatted.length-1;i++)
+		{
+			temp += fixturesFormatted[i] + "\n"; 
+		}
+		JOptionPane.showMessageDialog(null, temp);
 	}
 	
 	public static String[] readFixtures(String leagueChoice)
@@ -157,7 +164,7 @@ public class LoginDev
 			{
 				homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), currentLeagueParticipants);
 				awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(i)), currentLeagueParticipants);
-				fixtureDisplay[i] = (homeTeam + " - " + awayTeam);
+				fixtureDisplay[i] = (homeTeam + " V " + awayTeam);
 				System.out.print(fixtureDisplay[i]);
 			}
 		}
@@ -170,26 +177,33 @@ public class LoginDev
 	
 	
 		public static void editResults() 
+	//FIX JOP DISPLAY OF RESULTS***************
 	{
+		String pattern = "[0-9]{1,2}";
 		int choice = 0;
 		int fixtureChoice = 0;
-		String [] yesNo = {"yes", "no"};
+		String homeScore = "", awayScore = "";
 		boolean resultExists = false;
 		String matchNumberChoice = "";
 		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit"); // MENU FOR LEAGUE EDITING TO PASS IN LEAGUE NUMBER NEEDED
-		String [] fixtureDisplay = displayFixtures(leagueNumber);
+		String [] fixtureDisplay = readFixtures(leagueNumber);
 		String resultsFileName = leagueNumber + "_Results.txt";
-		fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]);
+		fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]); //MAY CHANGE GUI
 		matchNumberChoice = Integer.toString(fixtureChoice);
 		resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
 		if (resultExists == true)
 		{		
-			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?");	
-			if (choice == 0) //If yes
+			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?", "Confirm", JOptionPane.YES_OPTION, JOptionPane.NO_OPTION);	
+			if (choice == JOptionPane.YES_OPTION) //If yes
 			{
 			removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score");
+			
+			homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+			while (!(homeScore.matches(pattern)))
+				homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+			awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
+			while (!(awayScore.matches(pattern)))
+				awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
 			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
 			writeFile(output,resultsFileName);
 			//Give option to edit others or back out of menu
@@ -198,8 +212,13 @@ public class LoginDev
 		}
 		else 
 		{
-			String homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
-			String awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
+			homeScore = JOptionPane.showInputDialog(null, "Invalid input\nEnter home score:");
+			while (!(homeScore.matches(pattern)))
+				homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+			awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
+			while (!(awayScore.matches(pattern)))
+				awayScore = JOptionPane.showInputDialog(null, "Invalid input\nEnter away score:");
+		
 			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
 			writeFile(output,resultsFileName);
 
@@ -274,49 +293,80 @@ public class LoginDev
 
 	public static void displayResults()
 	{
-		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
+		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");							//NEED TO SORT LEAGUE NUMBER VARIABLE
+		String homeTeamNumber = "", awayTeamNumber ="";
+		String homeTeamName ="", awayTeamName ="";
+		String homeTeamScore = "", awayTeamScore = "";
 		String temp = "";
-		String homeTeam = "", awayTeam = "";
-		String [] fileElements;
-		Scanner in;
-		FileReader read;
+		String fixturesFileName = leagueNumber + "_fixtures.txt";
+		String teamFileName = leagueNumber + "_participants.txt";
+		String resultsFileName = leagueNumber + "_Results.txt";
+		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
+		results.add(new ArrayList<String>());
+		results.add(new ArrayList<String>());
+		String[] fileElements;
+		String[] resultDisplay = {""};
+		int fixtureCount = 1;
+	
 		try
 		{
-			System.out.println("test case");
-			read = new FileReader("1_fixtures.txt");
-			in = new Scanner(read);
-			while(in.hasNext())
+			FileReader read = new FileReader(resultsFileName);
+			Scanner in = new Scanner(read);
+			while (in.hasNext())
 			{
-				temp = in.nextLine();
-				System.out.println("uijq");
-				fileElements = (temp.split(","));
-				System.out.println(Arrays.toString((fileElements)));
-				teams.get(0).add(fileElements[1]); //home Teams
-				System.out.println("sd");
-				teams.get(1).add(fileElements[2]);
-				System.out.println("12345");
+				fileElements = in.nextLine().split(",");
+				results.get(0).add(fileElements[1]);
+				results.get(1).add(fileElements[2]);;
+				fixtureCount++;
 			}
-			System.out.println("123");
 			read.close();
-			in.close();	
+			in.close();
 			
-			for (int i = 0;i< teams.size();i++)
-			{	
-				System.out.println("Tester");
-				for (int j=0;j<teams.get(i).size();j++)
-				{
-					System.out.println("Test");
-					homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), "1_participants.txt");
-					awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(j)), "1_participants.txt");
-					JOptionPane.showMessageDialog(null, homeTeam + " V " + awayTeam);
-				}
-			
+			resultDisplay = new String[fixtureCount];
+			for (int i=1;i<fixtureCount;i++)
+			{
+				homeTeamNumber = getFixtureDetails(fixturesFileName, 1, i);
+				awayTeamNumber = getFixtureDetails(fixturesFileName, 2, i);
+				homeTeamName = getTeamName(Integer.parseInt(homeTeamNumber), teamFileName);
+				awayTeamName = getTeamName(Integer.parseInt(awayTeamNumber), teamFileName);
+				homeTeamScore = results.get(0).get(i-1);
+				awayTeamScore = results.get(1).get(i-1);
+				
+				resultDisplay[i] = homeTeamName + "  " + homeTeamScore + " - " + awayTeamScore + "  " + awayTeamName;
+				temp += resultDisplay[i] + "\n";
 			}
+				//FIX THE DISPLAY 
+				JOptionPane.showMessageDialog(null, temp);
 		}
 		catch(Exception e)
 		{}
 	}
 
+	public static String getFixtureDetails(String fileName, int pos, int fixtureCount) //pos of item to get(), fixture(line)number
+	{
+		String returnValue = "";
+		String fixtureNumber = Integer.toString(fixtureCount);
+		String[] fileElements;
+		try
+		{
+			FileReader reader = new FileReader(fileName);
+			Scanner in = new Scanner(reader);
+			while(in.hasNext())
+			{
+				fileElements = in.nextLine().split(",");
+				if (fileElements[0].equals(Integer.toString(fixtureCount)))
+				{
+					returnValue =  fileElements[pos];
+					break;
+				}
+			}
+			in.close();
+			reader.close();
+		}
+		catch(Exception e)
+		{}
+		return returnValue;
+	}
 		
 	public static void overwriteFile(String file, String toDel)
 	{
