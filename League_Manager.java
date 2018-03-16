@@ -103,50 +103,24 @@ public class League
 	{
 		String leagueName=""; 
 		String leagueFileInput="";
+		File leagueFilers = new File(leagueFile);
+		if (!(leagueFilers.exists()))
+		{
+			leagueFilers.createNewFile();
+			leagueName=menuBox("Enter your league name:");
+			leagueFileInput=currentAdminNo+","+leagueName+",1";
+			writeFile(leagueFileInput,leagueFile);
+			addTeamsToLeague();
+			outputBoxs(leagueName+" has been created.");
+		}
+		else
+		{
 		leagueName=menuBox("Enter your league name:");
 		leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
 		writeFile(leagueFileInput,leagueFile);
 		addTeamsToLeague();
 		outputBoxs(leagueName+" has been created.");
-	}
-	
-	public static int getNumberOfLeaguesMade()throws IOException
-	{
-		boolean sameAdmin=true;
-		boolean found=false;
-		int currentAdminPostion=0;
-		int temp=0;
-		int numberOfLeagues=0;
-		File leagueFilers = new File(leagueFile);
-		if (!(leagueFilers.exists()))
-		{
-			leagueFilers.createNewFile();
 		}
-		else
-		{
-		String [] arrayOfDetails=readFile(leagueFile).split(",");
-		for (int i=0;i<arrayOfDetails.length&&found==false;i=i+3)
-		{
-			temp=Integer.parseInt(arrayOfDetails[i]);
-			if(temp==currentAdminNo)
-			{
-				found=true;
-				currentAdminPostion=i;
-			}
-		}
-		for(int i=currentAdminPostion;i<arrayOfDetails.length && sameAdmin==true;i=i+3)
-		{
-			if(currentAdminNo!=Integer.parseInt(arrayOfDetails[i]))
-			{
-				sameAdmin=false;
-			}
-			else
-			{
-				numberOfLeagues=Integer.parseInt(arrayOfDetails[i+2]);
-			}
-		}
-		}
-		return numberOfLeagues;
 	}
 	
 	public static String readFile(String textFile)
@@ -447,4 +421,21 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 		 String[] returned = x.split(",");
 		 return returned;
     } 
+	
+	public static int getNumberOfLeaguesMade()
+	{
+		int numberOfLeagues=0;
+		String adminNumberAsString="";
+		adminNumberAsString=adminNumberAsString+currentAdminNo;
+		String [] temp=readFile(leagueFile,adminNumberAsString,0,2);
+		if(temp[temp.length-1].equals(""))
+		{
+			numberOfLeagues=0;
+		}
+		else
+		{
+			numberOfLeagues=Integer.parseInt(temp[temp.length-1]);
+		}
+		return numberOfLeagues;
+	}
 }
