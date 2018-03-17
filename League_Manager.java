@@ -95,7 +95,13 @@ public class League
 	 public static int menuBoxInt(String options)
 	{
 		String text = JOptionPane.showInputDialog(null, options);
-		int x = Integer.parseInt(text);
+		boolean isRightFormat=true;
+		int x=0;
+		isRightFormat=validateNumberInput(text);
+		if(isRightFormat==true)
+		{
+		x = Integer.parseInt(text);
+		}
 		return x;
 	}
 	
@@ -126,15 +132,15 @@ public class League
 	public static String readFile(String textFile)
 	{
 		String fileText="";
-		String ass="";
+		String temp="";
 		try
 		{
 		FileReader reader=new FileReader(textFile);
 		Scanner in=new Scanner(reader);
 		while(in.hasNext())
 		{
-			ass=in.nextLine();
-			fileText=fileText+ass+",";
+			temp=in.nextLine();
+			fileText=fileText+temp+",";
 		}
 		in.close();
 		reader.close();
@@ -179,8 +185,8 @@ public class League
 	int matchNumber=0;
 	int homeTeamNumber, awayTeamNumber, even, odd;
     boolean additionalTeamIncluded = false;
-	String [] poop=readFile(leagueFile,"1",0,1);
-	int whichLeague=optionBoxs(poop,"Select a league:");
+	String [] selectionOfLeagues=readFile(leagueFile,"1",0,1);
+	int whichLeague=optionBoxs(selectionOfLeagues,"Select a league:");
 	whichLeague=whichLeague+1;
 	String teamFileName=whichLeague+"_participants.txt";
 	String fixtureGenerationFileName=whichLeague+"_fixtures.txt";
@@ -361,7 +367,7 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 	public static boolean validateNumberInput(String text)
 	{
 		String result="";
-		String pattern="[0-9]{0,10}";
+		String pattern="[0-9]{1,2}";
 		String message1 = "A number must be input.";
 	    String message2 = "Format of user input is incorrect, a number  is required.";
 		boolean verified=false;
