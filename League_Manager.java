@@ -114,18 +114,33 @@ public class League
 		{
 			leagueFilers.createNewFile();
 			leagueName=menuBox("Enter your league name:");
+			if (leagueName != null && !leagueName.equals(""))
+			{
 			leagueFileInput=currentAdminNo+","+leagueName+",1";
 			writeFile(leagueFileInput,leagueFile);
 			addTeamsToLeague();
 			outputBoxs(leagueName+" has been created.");
+			}
+			else
+			{
+				outputBoxs("You must enter a team name.");
+				//delete League file here then.
+			}
 		}
 		else
 		{
-		leagueName=menuBox("Enter your league name:");
-		leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
-		writeFile(leagueFileInput,leagueFile);
-		addTeamsToLeague();
-		outputBoxs(leagueName+" has been created.");
+			leagueName=menuBox("Enter your league name:");
+			if (leagueName != null && !leagueName.equals(""))
+			{
+			leagueFileInput=currentAdminNo+","+leagueName+","+(getNumberOfLeaguesMade()+1);
+			writeFile(leagueFileInput,leagueFile);
+			addTeamsToLeague();
+			outputBoxs(leagueName+" has been created.");
+			}
+			else
+			{
+			outputBoxs("you must enter a team name.");
+			}
 		}
 	}
 	
