@@ -40,9 +40,12 @@ public class newestversion
 			    {
 					case 0: fixtureGeneration();
 					break;
-					case 1: generateTable();//displayTable();
+					case 1: String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
+					int league=Integer.parseInt(leagueNumber);
+					generateTable(league);//displayTable();
 					break;
-					case 2: editResults();  
+					case 2:String leagueNumbers = JOptionPane.showInputDialog(null, "Enter league number to edit");
+					       editResults(leagueNumbers);  
 				    break;
 					case 3: addTeamsToLeague();
 					break;
@@ -459,10 +462,10 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 		 String[] returned = x.split(",");
 		 return returned;
     } 
-	public static void generateTable()throws IOException
+	public static void generateTable(int leagueNumber)throws IOException
 	{
 		boolean readFile; 
-		readFile = readFilesIntoArrayLists();
+		readFile = readFilesIntoArrayLists(leagueNumber);
 		if (!readFile)
 		System.out.println("One or more files do not exist.");
 			else
@@ -474,11 +477,11 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 			}
 	}
 	
-	 public static boolean readFilesIntoArrayLists() throws IOException
+	 public static boolean readFilesIntoArrayLists( int leagueNumber) throws IOException
   {
-    String filename1 = "Teams20152016.txt";
-    String filename2 = "Fixtures20152016.txt";
-    String filename3 = "Outcomes20152016.txt";
+    String filename1 = leagueNumber+"_participants.txt";
+    String filename2 = leagueNumber+"_fixtures.txt";
+    String filename3 = leagueNumber+"_Results.txt";
     
     String fileElements[];
 	File inputFile1 = new File(filename1);
@@ -640,26 +643,41 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
     }
     formatStringTeamName = "%-" + (longestTeamNameLength + 2) + "s";
     System.out.printf(formatStringTeamName,"Team Name");
-    System.out.println("  GP  HW  HD  HL  GF  GA  AW  AD  AL  GF  GA   GD   TP"); 
+    //System.out.println("  GP  HW  HD  HL  GF  GA  AW  AD  AL  GF  GA   GD   TP");
+    System.out.printf("%5s" ,"GP");
+    System.out.printf("%5s" ,"HW");
+    System.out.printf("%5s" ,"GP");
+    System.out.printf("%5s" ,"GP");
+      System.out.printf("%5s" ,"GP");
+        System.out.printf("%5s" ,"GP");
+          System.out.printf("%5s" ,"GP");
+            System.out.printf("%5s" ,"GP");
+              System.out.printf("%5s" ,"GP");
+                System.out.printf("%5s" ,"GP");
+                  System.out.printf("%5s" ,"GP");
+                    System.out.printf("%6s" ,"GP");
+                      System.out.printf("%6s" ,"GP");
+      
+      System.out.println();
    
     for (int i = 0; i < leaderBoard.length; i++)
     {
 	  aTeamNumber       = leaderBoard[i][0];
-	  aTeamName         = teams.get(1).get(aTeamNumber - 1);       
+	  aTeamName         = teams.get(1).get(aTeamNumber - 1);      
       System.out.printf(formatStringTeamName, aTeamName);
-      System.out.printf("%4d", leaderBoard[i][1]);
-      System.out.printf("%4d", leaderBoard[i][2]);
-      System.out.printf("%4d", leaderBoard[i][3]);
-      System.out.printf("%4d", leaderBoard[i][4]);
-      System.out.printf("%4d", leaderBoard[i][5]);
-      System.out.printf("%4d", leaderBoard[i][6]);
-      System.out.printf("%4d", leaderBoard[i][7]);
-	  System.out.printf("%4d", leaderBoard[i][8]);
-      System.out.printf("%4d", leaderBoard[i][9]);
-      System.out.printf("%4d", leaderBoard[i][10]);
-      System.out.printf("%4d", leaderBoard[i][11]);
-      System.out.printf("%5d", leaderBoard[i][12]);
-      System.out.printf("%5d", leaderBoard[i][13]);
+      System.out.printf("%5d", leaderBoard[i][1]);
+      System.out.printf("%5d", leaderBoard[i][2]);
+      System.out.printf("%5d", leaderBoard[i][3]);
+      System.out.printf("%5d", leaderBoard[i][4]);
+      System.out.printf("%5d", leaderBoard[i][5]);
+      System.out.printf("%5d", leaderBoard[i][6]);
+      System.out.printf("%5d", leaderBoard[i][7]);
+	  System.out.printf("%5d", leaderBoard[i][8]);
+      System.out.printf("%5d", leaderBoard[i][9]);
+      System.out.printf("%5d", leaderBoard[i][10]);
+      System.out.printf("%5d", leaderBoard[i][11]);
+      System.out.printf("%6d", leaderBoard[i][12]);
+      System.out.printf("%6d", leaderBoard[i][13]);
       System.out.println();
     }
   } 
@@ -721,10 +739,9 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 	return fixtureDisplay;	
 	}
 	
-	public static void editResults() throws IOException
+	public static void editResults(String leagueNumber) throws IOException
 	//FIX JOP DISPLAY OF RESULTS***************
 	{
-		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit");
 		String fixture=leagueNumber+"_fixtures.txt";
 		boolean ass=checkIfItExists(fixture);
 		System.out.print(ass);
@@ -758,7 +775,8 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 			writeFile(output,resultsFileName);
 			//Give option to edit others or back out of menu
 			}
-			editResults();
+			
+			editResults(leagueNumber);
 			//ELSE TO BACK OUT TO MENU OPTIONS
 		}
 		else 
@@ -774,7 +792,7 @@ public static Boolean readFile(String fileName, String str1, String str2, int po
 			writeFile(output,resultsFileName);
 
 			//Give option to edit others or back out of menu
-			editResults();
+			editResults(leagueNumber);
 		}
 	}
 	else 
