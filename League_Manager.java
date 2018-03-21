@@ -368,37 +368,4 @@ public class LoginDev
 		return returnValue;
 	}
 		
-	public static void overwriteFile(String file, String toDel)
-	{
-		try
-		{
-		File tempFile = newFile (file.getAbsolutePath() + ".tmp");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		PrintWriter pw = new PrintWriter (new FileWriter(tempFile));
-		String line;
-		String[] fileElements;
-		while ((line = br.readLine()) != null)
-		{
-			fileElements = (br.nextLine()).split(",");
-			if (!(fileElements[pos].equals(toDel)))
-			{
-				pw.println(line);
-				pw.flush();
-			}
-		}
-			pw.close();
-			br.close();
-			
-		    if (!(aFile.exists()))
-				System.out.println(aFile.getName() + " does not exist.");
-			else if(aFile.delete())
-				System.out.println(aFile.getName() + " is now deleted.");
-			else if (tempFile.renameTo(file))
-				System.out.println("Renamed file");
-					
-		}
-		
-		catch(Exception e)
-		{}
-	}
 }
