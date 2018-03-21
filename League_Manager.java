@@ -131,7 +131,7 @@ public class LoginDev
 		JOptionPane.showMessageDialog(null, temp);
 	}
 	
-	public static String[] readFixtures(String leagueChoice)
+		public static String[] readFixtures(String leagueChoice)
 	{
 		ArrayList<ArrayList<String>> teams = new ArrayList<ArrayList<String>>();
 		teams.add(new ArrayList<String>());
@@ -140,6 +140,7 @@ public class LoginDev
 		String currentLeagueFixtures = leagueChoice + "_fixtures.txt";
 		String currentLeagueParticipants = leagueChoice + "_participants.txt";
 		String [] fileElements;
+		int temp = getNumberOfTeams(currentLeagueParticipants);
 		Scanner in;
 		FileReader read;
 		String[] fixtureDisplay = {""};
@@ -151,21 +152,25 @@ public class LoginDev
 			in = new Scanner(read);
 			while (in.hasNext())
 			{
-				fixtureCount++;
 				fileElements = in.nextLine().split(",");
+				if ((Integer.parseInt(fileElements[1])) > temp || (Integer.parseInt(fileElements[2])) > temp)
+				{}
+				else
+				{
 				teams.get(0).add(fileElements[1]);
 				teams.get(1).add(fileElements[2]);
+				}
 			}
 			read.close();
 			in.close();
 			
-			fixtureDisplay = new String[fixtureCount];
-			for (int i = 0;i < fixtureCount;i++)
+			fixtureDisplay = new String[teams.get(0).size()];
+			for (int i = 0;i < teams.get(0).size();i++)
 			{
 				homeTeam = getTeamName(Integer.parseInt(teams.get(0).get(i)), currentLeagueParticipants);
 				awayTeam = getTeamName(Integer.parseInt(teams.get(1).get(i)), currentLeagueParticipants);
 				fixtureDisplay[i] = (homeTeam + " V " + awayTeam);
-				System.out.print(fixtureDisplay[i]);
+				//System.out.print(fixtureDisplay[i]);
 			}
 		}
 		
