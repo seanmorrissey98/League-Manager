@@ -185,9 +185,8 @@ public class LoginDev
 	//FIX JOP DISPLAY OF RESULTS***************
 	{
 		String fixture=leagueNumber+"_fixtures.txt";
-		boolean ass=checkIfItExists(fixture);
-		System.out.print(ass);
-		if (ass==true)
+		boolean checker=checkIfItExists(fixture);
+		if (checker==true)
 		{
 		String pattern = "[0-9]{1,}";
 		int choice = 0;
@@ -198,18 +197,16 @@ public class LoginDev
 		String [] fixtureDisplay = readFixtures(leagueNumber);
 		String resultsFileName = leagueNumber + "_results.txt";
 		//fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]); //MAY CHANGE GUI
-		String fix = dropDown(fixtureDisplay, "Select a fixture");
-		System.out.println(fix + "WUBAB");
-		int checker = Arrays.asList(fixtureDisplay).indexOf(fix) + 1;
-		System.out.println(checker + "TEST");
+		String temp = dropDown(fixtureDisplay, "Select a fixture");
+		fixtureChoice = Arrays.asList(fixtureDisplay).indexOf(temp);
 		matchNumberChoice = Integer.toString(fixtureChoice);
-		resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
+		resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice), 0);
 		if (resultExists == true)
 		{		
 			choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?", "Confirm", JOptionPane.YES_OPTION, JOptionPane.NO_OPTION);	
 			if (choice == JOptionPane.YES_OPTION) //If yes
 			{
-			removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
+			removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice), 0);
 			
 			while (!(homeScore.matches(pattern)))
 				homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
