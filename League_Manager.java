@@ -1,3 +1,41 @@
+/*===================
+import java.awt.BorderLayout;
+import java.awt.Container;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+public class TableSample {
+  public static void main(String args[]) {
+    JFrame f = new JFrame("LeaderBoard"); // (league_Name+" LeaderBoard")
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container content = f.getContentPane();
+    Object leaderboard[][] = 
+	{ 
+	    { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0"},
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0" },
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0"},
+        { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0"},
+	    { "AOL", "America Online", "68 3/4","0","0","0","0","0","0","0","0","0","0"}
+	};
+    Object columns[] = {"GP","HW","HD","HL","GF","GA","AW","AD","AL","GF","GA","GD","TP"};
+    JTable table = new JTable(leaderboard, columns);
+    JScrollPane scrollPane = new JScrollPane(table);
+    content.add(scrollPane, BorderLayout.CENTER);
+    f.setSize(800, 200);
+    f.setVisible(true);
+  }
+}
+
+
+====================*/
+
 import java.io.*;
 import javax.swing.*;
 import java.util.*;
