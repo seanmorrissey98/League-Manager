@@ -470,3 +470,192 @@ public class LoginDev
 	}
 		
 }
+/*
+
+	public static void displayResults(String leagueChoice)
+	//FIX JOP DISPLAY*********************
+	{		
+		String resultsFileName = leagueChoice + "_results.txt";
+		String [] temp = readFixtures(leagueChoice);
+		String fileElements[] = (getFileDetails(resultsFileName));
+		
+		String fixtureNumber = "", homeScore = "", awayScore = "";
+		String homeTeam = "", awayTeam = "";
+		String[] resultDisplay = new String[teamDetails.size()];
+		for (int i = 0;i<teamDetails.size();i++)
+		{
+			fixtureNumber = (teamDetails.get(0).get(i));
+			homeTeam = teamDetails.get(1).get(i);
+			awayTeam = teamDetails.get(2).get(i);
+			for (int j = 0; j < fileElements.length-1;j++)
+			{
+				if (fileElements[0] == teamDetails.get(0).get(i));
+				{
+					homeScore = fileElements[1];
+					awayScore = fileElements[2];
+				}
+			}			
+			resultDisplay[i] = (fixtureNumber + ". " + homeTeam + ": " + homeScore + " - " + awayScore + " :" + awayTeam);
+			System.out.println(resultDisplay[i]);
+		}
+	
+	}
+	public static void editResults(String leagueNumber) throws IOException
+	//FIX JOP DISPLAY OF RESULTS***************
+	{
+		ArrayList<ArrayList<String>> editResults = new ArrayList<ArrayList<String>>();
+		editResults.add(new ArrayList<String>());
+		editResults.add(new ArrayList<String>());
+		editResults.add(new ArrayList<String>());
+		
+		boolean resultExists = false;
+		String [] fixtureDisplay = readFixtures(leagueNumber);
+		String pattern = "[0-9]{1,}";
+		String fixture=leagueNumber+"_fixtures.txt";
+		String resultsFileName = leagueNumber + "_results.txt";
+		int fixtureChoice = 0, choice = 0;
+		String homeScore = "", awayScore = "";
+		
+		boolean checker=checkIfItExists(fixture);
+		if (checker==true)
+		{
+			String temp = dropDown(fixtureDisplay, "Select a fixture");
+			fixtureChoice = Arrays.asList(fixtureDisplay).indexOf(temp);
+			resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice), 0);
+			if (resultExists == true)
+			{		
+				choice = JOptionPane.showConfirmDialog(null, "Already entered result for this fixture, Do you want to edit the result?", "Confirm", JOptionPane.YES_OPTION, JOptionPane.NO_OPTION);	
+				if (choice == JOptionPane.YES_OPTION) //If yes
+				{
+				removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice), 0);
+				editResults.get(0).add(Integer.toString(fixtureChoice));
+				while (!(homeScore.matches(pattern)))
+					homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+				editResults.get(1).add(homeScore);	
+				while (!(awayScore.matches(pattern)))
+					awayScore = JOptionPane.showInputDialog(null, "Enter away score:");		
+				editResults.get(2).add(awayScore);
+				
+				String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
+				writeFile(output,resultsFileName);
+				//Give option to edit others or back out of menu
+				}
+				
+				editResults(leagueNumber);
+				//ELSE TO BACK OUT TO MENU OPTIONS
+			}	
+			else 
+			{
+				editResults.get(0).add(Integer.toString(fixtureChoice));
+				while (!(homeScore.matches(pattern)))
+					homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
+				editResults.get(1).add(homeScore);	
+				while (!(awayScore.matches(pattern)))
+					awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
+				editResults.get(2).add(awayScore);
+			
+				String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
+				writeFile(output,resultsFileName);
+
+				//Give option to edit others or back out of menu
+				editResults(leagueNumber);
+			}		
+		}
+		else 
+		{
+			JOptionPane.showMessageDialog(null, "Generate Fixtures First");
+		}
+	}
+		public static String[] getFileDetails(String fileName) 
+	{
+		String [] fileElements = {""};
+		ArrayList<ArrayList<String>> fileDetails = new ArrayList<ArrayList<String>>();
+		fileDetails.add(new ArrayList<String>());
+		fileDetails.add(new ArrayList<String>());
+		fileDetails.add(new ArrayList<String>());
+		try
+		{
+			File aFile = new File(fileName);
+			if (aFile.exists())
+			{
+				Scanner in;
+				in = new Scanner(aFile);
+				while(in.hasNext())
+				{
+					fileElements = (in.nextLine()).split(",");
+					fileDetails.get(0).add(fileElements[0]);  
+					fileDetails.get(1).add(fileElements[1]);
+					fileDetails.get(2).add(fileElements[2]);
+				}
+				in.close();
+			}
+		}
+		catch (Exception e)
+		{}
+		return fileElements;
+	}
+	public static String[] readFixtures(String leagueChoice)
+	{
+		fixtureDetails = new ArrayList<ArrayList<String>>(); //MAKE GLOBAL
+		fixtureDetails.add(new ArrayList<String>());
+		fixtureDetails.add(new ArrayList<String>());		
+		fixtureDetails.add(new ArrayList<String>());
+		
+		teamDetails = new ArrayList<ArrayList<String>>(); //MAKE GLOBAL
+		teamDetails.add(new ArrayList<String>());
+		teamDetails.add(new ArrayList<String>());		
+		teamDetails.add(new ArrayList<String>());
+		
+		String homeTeam = "", awayTeam = "", fixtureNumber = "";
+		String temp1 = "", temp2 = "";
+		String fileElements[] = {""};
+		String fixtureDisplay [] = {""};
+		String currentLeagueParticipants = leagueChoice + "_participants.txt";
+		int teamCount = getNumberOfTeams(currentLeagueParticipants);
+		try
+		{
+			File aFile = new File(leagueChoice + "_fixtures.txt");
+			if (aFile.exists())
+			{
+				Scanner in = new Scanner(aFile);
+				while (in.hasNext())
+				{
+					if (Integer.parseInt(fileElements[1]) > teamCount || Integer.parseInt(fileElements[2]) > teamCount)
+					{
+						System.out.println("TEST");
+					}
+					else
+					{
+						fileElements = (in.nextLine().split(","));
+						fixtureDetails.get(0).add((fileElements[0]));  
+						fixtureDetails.get(1).add((fileElements[1]));
+						fixtureDetails.get(2).add((fileElements[2]));
+						
+						temp1 = getTeamName(Integer.parseInt(fileElements[1]), currentLeagueParticipants);
+						temp2 = getTeamName(Integer.parseInt(fileElements[2]), currentLeagueParticipants);
+						
+						teamDetails.get(0).add(fileElements[0]);
+						teamDetails.get(1).add(temp1);
+						teamDetails.get(1).add(temp2);
+					}
+				}
+				in.close();
+				
+				fixtureDisplay = new String[fixtureDetails.size()];
+				for (int i = 0;i < teamDetails.size();i++)
+				{
+					fixtureNumber = teamDetails.get(0).get(i);
+					homeTeam = teamDetails.get(1).get(i);
+					awayTeam = teamDetails.get(2).get(i);
+					
+					
+					fixtureDisplay[i] = (fixtureNumber + ". " + homeTeam + " V " + awayTeam);
+				}
+			}
+		}
+		catch(Exception e)
+		{}
+		return fixtureDisplay;
+	}	
+	
+*/
