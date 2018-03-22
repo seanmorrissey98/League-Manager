@@ -181,19 +181,27 @@ public class LoginDev
 	
 	
 	
-		public static void editResults() 
+		public static void editResults(String leagueNumber) throws IOException
 	//FIX JOP DISPLAY OF RESULTS***************
 	{
-		String pattern = "[0-9]{1,2}";
+		String fixture=leagueNumber+"_fixtures.txt";
+		boolean ass=checkIfItExists(fixture);
+		System.out.print(ass);
+		if (ass==true)
+		{
+		String pattern = "[0-9]{1,}";
 		int choice = 0;
 		int fixtureChoice = 0;
 		String homeScore = "", awayScore = "";
 		boolean resultExists = false;
 		String matchNumberChoice = "";
-		String leagueNumber = JOptionPane.showInputDialog(null, "Enter league number to edit"); // MENU FOR LEAGUE EDITING TO PASS IN LEAGUE NUMBER NEEDED
 		String [] fixtureDisplay = readFixtures(leagueNumber);
-		String resultsFileName = leagueNumber + "_Results.txt";
-		fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]); //MAY CHANGE GUI
+		String resultsFileName = leagueNumber + "_results.txt";
+		//fixtureChoice = JOptionPane.showOptionDialog(null, "Choose fixture to edit", "Click button", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, fixtureDisplay, fixtureDisplay[0]); //MAY CHANGE GUI
+		String fix = dropDown(fixtureDisplay, "Select a fixture");
+		System.out.println(fix + "WUBAB");
+		int checker = Arrays.asList(fixtureDisplay).indexOf(fix) + 1;
+		System.out.println(checker + "TEST");
 		matchNumberChoice = Integer.toString(fixtureChoice);
 		resultExists = readFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
 		if (resultExists == true)
@@ -203,32 +211,36 @@ public class LoginDev
 			{
 			removeLineFromFile(resultsFileName, Integer.toString(fixtureChoice+1), 0);
 			
-			homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
 			while (!(homeScore.matches(pattern)))
 				homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
-			awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
 			while (!(awayScore.matches(pattern)))
 				awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
 			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
 			writeFile(output,resultsFileName);
 			//Give option to edit others or back out of menu
 			}
+			
+			editResults(leagueNumber);
 			//ELSE TO BACK OUT TO MENU OPTIONS
 		}
 		else 
 		{
-			homeScore = JOptionPane.showInputDialog(null, "Invalid input\nEnter home score:");
 			while (!(homeScore.matches(pattern)))
 				homeScore = JOptionPane.showInputDialog(null, "Enter home score:");
-			awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
 			while (!(awayScore.matches(pattern)))
-				awayScore = JOptionPane.showInputDialog(null, "Invalid input\nEnter away score:");
+				awayScore = JOptionPane.showInputDialog(null, "Enter away score:");
 		
 			String output = fixtureChoice+1 + "," + homeScore + "," + awayScore;
 			writeFile(output,resultsFileName);
 
 			//Give option to edit others or back out of menu
+			editResults(leagueNumber);
 		}
+	}
+	else 
+	{
+		JOptionPane.showMessageDialog(null, "Generate Fixtures First");
+	}
 	}
 	
 	public static void removeLineFromFile(String fileName, String toDel, int pos) //Params file name, String to delete, position of string
